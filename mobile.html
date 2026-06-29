@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>宝记松间 AI视觉智慧店长 - 移动端</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif}
+:root{--primary:#1890ff;--success:#52c41a;--warning:#faad14;--danger:#f5222d;--bg:#f5f5f5;--card:#fff;--text:#333;--text-light:#999;--border:#eee}
+body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+
+/* 手机外壳 */
+.phone{width:390px;height:844px;background:#fff;border-radius:50px;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden;position:relative;border:12px solid #1a1a1a;display:flex;flex-direction:column}
+.phone::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:30px;background:#1a1a1a;border-radius:0 0 24px 24px;z-index:100}
+
+/* 状态栏 */
+.status-bar{height:44px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;padding-top:12px;position:relative;z-index:50}
+.status-time{font-size:14px;font-weight:600}
+.status-icons{display:flex;gap:4px;align-items:center}
+.status-icons svg{width:16px;height:16px}
+
+/* 页面容器 */
+.pages{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch}
+.page{display:none;min-height:100%;padding-bottom:80px}
+.page.active{display:block}
+
+/* 底部导航 */
+.tab-bar{height:80px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding-bottom:20px;position:relative;z-index:50}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding-top:8px}
+.tab-item svg{width:24px;height:24px;fill:var(--text-light);transition:fill .2s}
+.tab-item span{font-size:11px;color:var(--text-light);transition:color .2s}
+.tab-item.active svg{fill:var(--primary)}
+.tab-item.active span{color:var(--primary);font-weight:600}
+
+/* 登录页 */
+.login-page{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 30px;background:linear-gradient(180deg,#1890ff 0%,#001529 100%);position:relative;z-index:10}
+.login-page .logo{width:80px;height:80px;background:rgba(255,255,255,0.2);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3)}
+.login-page .logo svg{width:44px;height:44px;fill:#fff}
+.login-page h1{color:#fff;font-size:22px;margin-bottom:4px;font-weight:600}
+.login-page .subtitle{color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:40px}
+.login-card{background:#fff;border-radius:16px;padding:28px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
+.login-card .wx-btn{width:100%;padding:14px;background:#07c160;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;cursor:pointer}
+.login-card .wx-btn svg{width:22px;height:22px;fill:#fff}
+.login-card .divider{display:flex;align-items:center;gap:12px;margin-bottom:16px;color:#999;font-size:12px}
+.login-card .divider::before,.login-card .divider::after{content:'';flex:1;height:1px;background:#eee}
+.login-card .input-wrap{margin-bottom:16px}
+.login-card .input-wrap input{width:100%;padding:12px 16px;border:1px solid #eee;border-radius:8px;font-size:14px;transition:border .2s}
+.login-card .input-wrap input:focus{outline:none;border-color:var(--primary)}
+.login-card .role-select{display:flex;gap:8px;margin-bottom:16px}
+.login-card .role-tag{flex:1;padding:10px;text-align:center;border:1px solid #eee;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
+.login-card .role-tag.active{border-color:var(--primary);background:#e6f7ff;color:var(--primary);font-weight:600}
+.login-card .login-btn{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
+
+/* 顶部导航 */
+.nav-header{height:48px;background:#fff;display:flex;align-items:center;padding:0 16px;position:sticky;top:0;z-index:40;border-bottom:1px solid var(--border)}
+.nav-header .back{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.nav-header .back svg{width:20px;height:20px;fill:var(--text)}
+.nav-header .title{flex:1;text-align:center;font-size:16px;font-weight:600;padding:0 32px}
+.nav-header .right{width:32px}
+
+/* 首页 */
+.home-header{padding:16px 16px 8px;background:linear-gradient(135deg,var(--primary),#36cfc9);border-radius:0 0 24px 24px}
+.home-header .greeting{color:#fff;font-size:18px;font-weight:600;margin-bottom:2px}
+.home-header .sub{color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:16px}
+.home-header .weather{display:flex;align-items:center;gap:6px;color:#fff;font-size:13px;opacity:0.9}
+.home-header .weather svg{width:18px;height:18px;fill:#fff}
+
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px}
+.stat-card-m{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.stat-card-m .label{font-size:12px;color:var(--text-light);margin-bottom:8px}
+.stat-card-m .value{font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px}
+.stat-card-m .trend{font-size:12px;display:flex;align-items:center;gap:2px}
+.stat-card-m .trend.up{color:var(--danger)}
+.stat-card-m .trend.down{color:var(--success)}
+.stat-card-m .trend svg{width:12px;height:12px;fill:currentColor}
+
+/* 快捷入口 */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 16px}
+.quick-item{background:#fff;border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer}
+.quick-item .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.quick-item .icon svg{width:22px;height:22px;fill:#fff}
+.quick-item .icon.blue{background:linear-gradient(135deg,#1890ff,#36cfc9)}
+.quick-item .icon.green{background:linear-gradient(135deg,#52c41a,#95de64)}
+.quick-item .icon.orange{background:linear-gradient(135deg,#faad14,#ffd666)}
+.quick-item .icon.red{background:linear-gradient(135deg,#f5222d,#ff7875)}
+.quick-item .icon.purple{background:linear-gradient(135deg,#722ed1,#b37feb)}
+.quick-item .name{font-size:12px;color:var(--text)}
+
+/* 告警列表 */
+.section-title{padding:16px 16px 8px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.section-title .more{color:var(--primary);font-size:13px;font-weight:400}
+.alert-list{padding:0 16px}
+.alert-item{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.alert-item .alert-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-item .alert-icon svg{width:22px;height:22px;fill:#fff}
+.alert-item .alert-body{flex:1}
+.alert-item .alert-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.alert-item .alert-desc{font-size:12px;color:var(--text-light);margin-bottom:6px}
+.alert-item .alert-meta{font-size:11px;color:#bbb;display:flex;justify-content:space-between;align-items:center}
+.alert-item .alert-meta .badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.alert-item .alert-meta .badge.red{background:#fff1f0;color:#cf1322}
+.alert-item .alert-meta .badge.orange{background:#fff7e6;color:#d48806}
+.alert-item .alert-meta .badge.blue{background:#e6f7ff;color:#096dd9}
+
+/* 列表页 */
+.list-page{padding:0}
+.filter-tabs{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none}
+.filter-tabs::-webkit-scrollbar{display:none}
+.filter-tab{padding:6px 14px;border-radius:16px;background:#fff;border:1px solid #eee;font-size:13px;white-space:nowrap;cursor:pointer}
+.filter-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+.list-item-m{background:#fff;padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center}
+.list-item-m:last-child{border-bottom:none}
+.list-item-m .item-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.list-item-m .item-icon svg{width:22px;height:22px;fill:#fff}
+.list-item-m .item-body{flex:1}
+.list-item-m .item-title{font-size:14px;font-weight:600;margin-bottom:3px}
+.list-item-m .item-desc{font-size:12px;color:var(--text-light)}
+.list-item-m .item-right{text-align:right}
+.list-item-m .item-right .value{font-size:16px;font-weight:700;margin-bottom:2px}
+.list-item-m .item-right .label{font-size:11px;color:#bbb}
+
+/* 图表卡片 */
+.chart-card{background:#fff;border-radius:12px;margin:0 16px 12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.chart-card .chart-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.chart-card .chart-area{height:180px}
+
+/* 按钮 */
+.btn-m{width:100%;padding:12px;border-radius:8px;border:none;font-size:15px;font-weight:600;cursor:pointer;text-align:center}
+.btn-m-primary{background:var(--primary);color:#fff}
+.btn-m-success{background:var(--success);color:#fff}
+.btn-m-danger{background:var(--danger);color:#fff}
+.btn-m-default{background:#fff;border:1px solid #eee;color:var(--text)}
+
+/* 底部操作 */
+.bottom-action{padding:12px 16px 24px;background:#fff;position:sticky;bottom:0;border-top:1px solid var(--border)}
+
+/* 进度条 */
+.progress-m{height:6px;background:#f5f5f5;border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-m-fill{height:100%;border-radius:3px}
+
+/* 空状态 */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state svg{width:80px;height:80px;margin-bottom:16px;fill:#ddd}
+.empty-state .empty-text{font-size:14px;color:#999}
+
+/* 消息中心 */
+.msg-item{background:#fff;padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:12px}
+.msg-item.unread{background:#f6ffed}
+.msg-item .msg-dot{width:8px;height:8px;border-radius:50%;background:var(--danger);flex-shrink:0;margin-top:6px}
+.msg-item .msg-body{flex:1}
+.msg-item .msg-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.msg-item .msg-desc{font-size:12px;color:var(--text-light);margin-bottom:6px}
+.msg-item .msg-time{font-size:11px;color:#bbb}
+
+/* 摄像头预览 */
+.cam-preview{width:100%;height:200px;background:#1a1a1a;border-radius:12px;position:relative;overflow:hidden;margin:16px;display:flex;align-items:center;justify-content:center;width:calc(100% - 32px)}
+.cam-preview .cam-label{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px}
+.cam-preview .cam-status{position:absolute;bottom:8px;right:8px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px}
+.cam-preview .cam-status .live-dot{width:6px;height:6px;border-radius:50%;background:var(--danger);animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}
+.cam-preview svg{width:48px;height:48px;fill:rgba(255,255,255,0.2)}
+
+/* 座位状态 */
+.seat-grid-m{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:16px}
+.seat-m{aspect-ratio:1;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border:2px solid transparent;box-shadow:0 2px 4px rgba(0,0,0,0.04)}
+.seat-m.free{border-color:#b7eb8f;color:#389e0d;background:#f6ffed}
+.seat-m.occupied{border-color:#ffa39e;color:#cf1322;background:#fff1f0}
+.seat-m.cleaning{border-color:#ffd591;color:#d48806;background:#fff7e6}
+
+/* 个人信息 */
+.profile-header{background:linear-gradient(135deg,var(--primary),#36cfc9);padding:40px 20px 30px;text-align:center;color:#fff;border-radius:0 0 24px 24px}
+.profile-header .avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.2);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.3);font-size:28px;font-weight:700}
+.profile-header .name{font-size:18px;font-weight:600;margin-bottom:2px}
+.profile-header .role{font-size:13px;opacity:0.8}
+.profile-menu{padding:16px}
+.profile-menu-item{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer}
+.profile-menu-item .menu-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.profile-menu-item .menu-icon svg{width:20px;height:20px;fill:#fff}
+.profile-menu-item .menu-title{flex:1;font-size:14px;font-weight:500}
+.profile-menu-item .menu-arrow svg{width:16px;height:16px;fill:#ccc}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar{width:0;height:0}
+
+/* ===== Loading 遮罩 ===== */
+.loading-overlay-m{position:fixed;inset:0;background:rgba(255,255,255,0.85);display:none;align-items:center;justify-content:center;z-index:2000;flex-direction:column;gap:12px}
+.loading-overlay-m.active{display:flex}
+.spinner-m{width:32px;height:32px;border:3px solid #f0f0f0;border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text-m{font-size:13px;color:#666}
+
+/* ===== Toast 提示 ===== */
+.toast-container-m{position:fixed;top:60px;left:16px;right:16px;z-index:3000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast-item-m{background:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.12);display:flex;align-items:center;gap:10px;animation:toastInM 0.3s ease;font-size:13px;border-left:3px solid var(--primary);pointer-events:auto}
+.toast-item-m.success{border-left-color:var(--success);color:var(--success)}
+.toast-item-m.error{border-left-color:var(--danger);color:var(--danger)}
+.toast-item-m.warning{border-left-color:var(--warning);color:var(--warning)}
+.toast-item-m.info{border-left-color:var(--primary);color:var(--primary)}
+@keyframes toastInM{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes toastOutM{from{transform:translateY(0);opacity:1}to{transform:translateY(-20px);opacity:0}}
+
+/* ===== 弹窗层 ===== */
+.modal-overlay-m{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:flex-end;justify-content:center;z-index:2500}
+.modal-overlay-m.active{display:flex}
+.modal-m{background:#fff;border-radius:16px 16px 0 0;width:100%;max-height:80vh;overflow:auto;padding:20px 16px 32px;animation:modalUp 0.3s ease}
+@keyframes modalUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header-m{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-header-m h3{font-size:16px;font-weight:600}
+.modal-close-m{width:32px;height:32px;border-radius:50%;border:none;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.modal-close-m svg{width:18px;height:18px;fill:#666}
+.modal-body-m{font-size:13px;color:#666}
+.modal-footer-m{display:flex;gap:10px;margin-top:16px}
+.modal-footer-m .btn-m{flex:1}
+
+/* ===== 空状态 ===== */
+.empty-state-m{padding:40px 20px;text-align:center}
+.empty-state-m svg{width:64px;height:64px;margin-bottom:12px;fill:#ddd}
+.empty-state-m .title{font-size:14px;color:#666;margin-bottom:6px;font-weight:600}
+.empty-state-m .desc{font-size:12px;color:#999;margin-bottom:16px}
+
+/* ===== 数据刷新点 ===== */
+.refresh-dot-m{width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;animation:blink 2s infinite;margin-right:4px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ===== 按钮点击反馈 ===== */
+.quick-item:active,.alert-item:active,.list-item-m:active,.profile-menu-item:active{transform:scale(0.98);opacity:0.9}
+
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status-bar">
+<div class="status-time" id="statusTime">17:23</div>
+<div class="status-icons">
+<svg viewBox="0 0 24 24"><path d="M1 18h2V9H1v9zm4 4h2V5H5v17zm-4-8h2v-4H1v4zm4 0h2v-8H5v8zm-4-4h2V7H1v3zm4 0h2V3H5v7z"/></svg>
+<svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+</div>
+</div>
+
+<div class="pages" id="pages">
+
+<!-- ===== 登录页 ===== -->
+<div class="page active" id="page-login">
+<div class="login-page">
+<div class="logo">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+</div>
+<h1>AI视觉智慧店长</h1>
+<div class="subtitle">宝记松间 · 智能门店管理</div>
+<div class="login-card">
+<button class="wx-btn" onclick="wxLogin()">
+<svg viewBox="0 0 24 24"><path d="M9.5 4C5.36 4 2 6.69 2 10c0 1.89 1.08 3.56 2.78 4.66L4 17l2.5-1.5c.89.31 1.87.5 2.91.5.44 0 .87-.03 1.29-.09-.3-.82-.46-1.69-.46-2.59 0-3.58 3.45-6.48 7.7-6.48.34 0 .68.02 1.01.06C18.18 5.5 14.18 4 9.5 4zm-2.5 5.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm5 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+微信一键登录
+</button>
+<div class="divider">或使用账号登录</div>
+<div class="role-select">
+<div class="role-tag active" onclick="selectRoleM(this,'manager')">店长</div>
+<div class="role-tag" onclick="selectRoleM(this,'staff')">店员</div>
+<div class="role-tag" onclick="selectRoleM(this,'supervisor')">督导</div>
+</div>
+<div class="input-wrap">
+<input type="text" placeholder="请输入账号" value="manager01">
+</div>
+<div class="input-wrap">
+<input type="password" placeholder="请输入密码" value="123456">
+</div>
+<button class="login-btn" onclick="loginM()">登录</button>
+</div>
+</div>
+</div>
+
+<!-- ===== 首页 ===== -->
+<div class="page" id="page-home">
+<div class="home-header">
+<div class="greeting">下午好，张店长</div>
+<div class="sub">宝记松间 · 天台店</div>
+<div class="weather">
+<svg viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z"/></svg>
+晴 32°C · 客流预计今日较高
+</div>
+</div>
+<div class="stat-grid">
+<div class="stat-card-m">
+<div class="label">今日客流</div>
+<div class="value" style="color:var(--primary)">1,284</div>
+<div class="trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+12.5%</div>
+</div>
+<div class="stat-card-m">
+<div class="label">翻台率</div>
+<div class="value" style="color:var(--success)">86.4%</div>
+<div class="trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+8.2%</div>
+</div>
+<div class="stat-card-m">
+<div class="label">等餐时长</div>
+<div class="value" style="color:var(--warning)">18.2min</div>
+<div class="trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>-3.5min</div>
+</div>
+<div class="stat-card-m">
+<div class="label">合规率</div>
+<div class="value" style="color:var(--danger)">94.2%</div>
+<div class="trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+2.1%</div>
+</div>
+</div>
+<div class="quick-grid">
+<div class="quick-item" onclick="goTo('front')">
+<div class="icon blue"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+<div class="name">前厅</div>
+</div>
+<div class="quick-item" onclick="goTo('kitchen')">
+<div class="icon green"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 4h5v2h-5V6zm0 4h5v2h-5v-2zm0 4h5v2h-5v-2zM7 6h4v2H7V6zm0 4h4v2H7v-2zm0 4h4v2H7v-2z"/></svg></div>
+<div class="name">后厨</div>
+</div>
+<div class="quick-item" onclick="goTo('inventory')">
+<div class="icon orange"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+<div class="name">库存</div>
+</div>
+<div class="quick-item" onclick="goTo('inspect')">
+<div class="icon red"><svg viewBox="0 0 24 24"><path d="M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></div>
+<div class="name">巡检</div>
+</div>
+</div>
+<div class="section-title">实时告警 <span class="more" onclick="goTo('messages')">查看全部 ></span></div>
+<div class="alert-list">
+<div class="alert-item" onclick="showAlertDetail()">
+<div class="alert-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="alert-body">
+<div class="alert-title">后厨动火区域离人</div>
+<div class="alert-desc">A区灶台离人超过5秒，已触发安全告警</div>
+<div class="alert-meta">
+<span>10:23</span>
+<span class="badge red">紧急</span>
+</div>
+</div>
+</div>
+<div class="alert-item">
+<div class="alert-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="alert-body">
+<div class="alert-title">出品评分预警</div>
+<div class="alert-desc">宫保鸡丁评分72分，低于80分阈值</div>
+<div class="alert-meta">
+<span>10:18</span>
+<span class="badge orange">高</span>
+</div>
+</div>
+</div>
+<div class="alert-item">
+<div class="alert-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+</div>
+<div class="alert-body">
+<div class="alert-title">库存不足提醒</div>
+<div class="alert-desc">毛肚库存低于安全阈值（剩12kg）</div>
+<div class="alert-meta">
+<span>09:45</span>
+<span class="badge blue">中</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== 前厅 ===== -->
+<div class="page" id="page-front">
+<div class="nav-header">
+<div class="back" onclick="goTo('home')">
+<svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+</div>
+<div class="title">前厅管理</div>
+<div class="right"></div>
+</div>
+<div class="filter-tabs">
+<div class="filter-tab active">客流状态</div>
+<div class="filter-tab">翻台监测</div>
+<div class="filter-tab">等餐分析</div>
+<div class="filter-tab">在岗监控</div>
+</div>
+<div class="cam-preview">
+<span class="cam-label">天台区 - 实时监控</span>
+<div class="cam-status"><div class="live-dot"></div>LIVE</div>
+<svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+</div>
+<div class="section-title" style="padding-top:8px">天台区座位状态</div>
+<div class="seat-grid-m">
+<div class="seat-m occupied">1</div>
+<div class="seat-m occupied">2</div>
+<div class="seat-m free">3</div>
+<div class="seat-m occupied">4</div>
+<div class="seat-m occupied">5</div>
+<div class="seat-m cleaning">6</div>
+<div class="seat-m occupied">7</div>
+<div class="seat-m occupied">8</div>
+<div class="seat-m free">9</div>
+<div class="seat-m occupied">10</div>
+<div class="seat-m occupied">11</div>
+<div class="seat-m occupied">12</div>
+<div class="seat-m free">13</div>
+<div class="seat-m occupied">14</div>
+<div class="seat-m occupied">15</div>
+</div>
+<div class="section-title">翻台实时状态</div>
+<div class="alert-list">
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">12号桌 - 已清洁</div>
+<div class="item-desc">清洁用时 6分钟 | 清洁员: 张小明</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--success)">✓</div>
+<div class="label">可入座</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">8号桌 - 清洁中</div>
+<div class="item-desc">已用时 8分钟 | 清洁员: 李小红</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--warning)">8min</div>
+<div class="label">进行中</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">5号桌 - 清洁超时</div>
+<div class="item-desc">已用时 12分钟 | 清洁员: 王大力</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--danger)">12min</div>
+<div class="label">已告警</div>
+</div>
+</div>
+</div>
+<div class="chart-card">
+<div class="chart-title">等餐时长趋势</div>
+<div class="chart-area" id="chart-wait-m"></div>
+</div>
+</div>
+
+<!-- ===== 后厨 ===== -->
+<div class="page" id="page-kitchen">
+<div class="nav-header">
+<div class="back" onclick="goTo('home')">
+<svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+</div>
+<div class="title">后厨管理</div>
+<div class="right"></div>
+</div>
+<div class="filter-tabs">
+<div class="filter-tab active">出品评分</div>
+<div class="filter-tab">合规检测</div>
+<div class="filter-tab">安全监控</div>
+</div>
+<div class="cam-preview">
+<span class="cam-label">后厨出品区 - 实时监控</span>
+<div class="cam-status"><div class="live-dot"></div>LIVE</div>
+<svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+</div>
+<div class="section-title" style="padding-top:8px">今日出品评分明细</div>
+<div class="alert-list">
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">麻辣毛肚 - 89分</div>
+<div class="item-desc">摆盘22 分量24 色泽20 配菜23</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--success)">89</div>
+<div class="label">合格</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">宫保鸡丁 - 72分</div>
+<div class="item-desc">摆盘18 分量20 色泽15 配菜19</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--danger)">72</div>
+<div class="label">预警</div>
+</div>
+</div>
+</div>
+<div class="chart-card">
+<div class="chart-title">今日合规检测</div>
+<div style="display:flex;justify-content:space-around;padding:10px 0">
+<div style="text-align:center">
+<div style="width:80px;height:80px;position:relative;margin:0 auto 8px">
+<svg viewBox="0 0 100 100" width="80" height="80">
+<circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="8"/>
+<circle cx="50" cy="50" r="40" fill="none" stroke="#1890ff" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="7.5" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" text-anchor="middle" dy="5" font-size="16" font-weight="bold" fill="#333">96.8%</text>
+</svg>
+</div>
+<div style="font-size:12px;color:#666">着装合规</div>
+</div>
+<div style="text-align:center">
+<div style="width:80px;height:80px;position:relative;margin:0 auto 8px">
+<svg viewBox="0 0 100 100" width="80" height="80">
+<circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="8"/>
+<circle cx="50" cy="50" r="40" fill="none" stroke="#52c41a" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="7.0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" text-anchor="middle" dy="5" font-size="16" font-weight="bold" fill="#333">97.2%</text>
+</svg>
+</div>
+<div style="font-size:12px;color:#666">卫生环境</div>
+</div>
+</div>
+</div>
+<div style="padding:0 16px">
+<div class="list-item-m" style="background:#fff;border-radius:12px;margin-bottom:10px">
+<div class="item-body">
+<div class="item-title">抽烟行为检测</div>
+<div class="item-desc">赵小厨 | 10:15 | 已抓拍</div>
+</div>
+<div class="item-right">
+<span class="badge" style="background:#fff1f0;color:#cf1322;padding:2px 8px;border-radius:4px;font-size:12px">违规</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== 库存 ===== -->
+<div class="page" id="page-inventory">
+<div class="nav-header">
+<div class="back" onclick="goTo('home')">
+<svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+</div>
+<div class="title">库存管理</div>
+<div class="right"></div>
+</div>
+<div class="filter-tabs">
+<div class="filter-tab active">库存查询</div>
+<div class="filter-tab">采购建议</div>
+<div class="filter-tab">效期预警</div>
+</div>
+<div class="stat-grid" style="padding-top:16px">
+<div class="stat-card-m">
+<div class="label">库存总金额</div>
+<div class="value" style="color:var(--primary)">¥86,420</div>
+<div class="trend up">周转12.5天</div>
+</div>
+<div class="stat-card-m">
+<div class="label">预警项</div>
+<div class="value" style="color:var(--danger)">12</div>
+<div class="trend up">需处理</div>
+</div>
+</div>
+<div class="section-title">库存预警</div>
+<div class="alert-list">
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">毛肚 - 库存不足</div>
+<div class="item-desc">当前12kg | 安全库存20kg | 建议采购</div>
+</div>
+<div class="item-right">
+<button class="btn-m btn-m-primary btn-sm" style="padding:6px 12px;font-size:12px">采购</button>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">基围虾 - 临期</div>
+<div class="item-desc">效期至2026-07-01 | 剩余3天</div>
+</div>
+<div class="item-right">
+<button class="btn-m btn-m-warning btn-sm" style="padding:6px 12px;font-size:12px;background:#faad14;color:#fff;border:none;border-radius:4px">处理</button>
+</div>
+</div>
+</div>
+<div class="section-title">AI采购建议</div>
+<div class="chart-card">
+<div class="chart-title">未来3日采购建议</div>
+<div style="padding:10px 0">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5">
+<div>
+<div style="font-weight:600">毛肚</div>
+<div style="font-size:12px;color:#999">建议采购30kg</div>
+</div>
+<div style="color:var(--primary);font-weight:700">+30kg</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5">
+<div>
+<div style="font-weight:600">金针菇</div>
+<div style="font-size:12px;color:#999">建议采购20kg</div>
+</div>
+<div style="color:var(--primary);font-weight:700">+20kg</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
+<div>
+<div style="font-weight:600">牛肉卷</div>
+<div style="font-size:12px;color:#999">降温预警，+20%</div>
+</div>
+<div style="color:var(--primary);font-weight:700">+15kg</div>
+</div>
+</div>
+<button class="btn-m btn-m-primary" style="margin-top:16px">一键确认采购</button>
+</div>
+</div>
+
+<!-- ===== 巡检 ===== -->
+<div class="page" id="page-inspect">
+<div class="nav-header">
+<div class="back" onclick="goTo('home')">
+<svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+</div>
+<div class="title">巡检管理</div>
+<div class="right"></div>
+</div>
+<div class="filter-tabs">
+<div class="filter-tab active">自检任务</div>
+<div class="filter-tab">巡检记录</div>
+<div class="filter-tab">整改闭环</div>
+</div>
+<div class="section-title" style="padding-top:16px">今日自检任务 (18/20)</div>
+<div class="alert-list">
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">前厅卫生检查</div>
+<div class="item-desc">已拍照 | AI识别: 合规</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--success)">✓</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">后厨清洁检查</div>
+<div class="item-desc">已拍照 | AI识别: 合规</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--success)">✓</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">消防通道检查</div>
+<div class="item-desc">待拍照 | 截止: 18:00</div>
+</div>
+<div class="item-right">
+<button class="btn-m btn-m-primary btn-sm" style="padding:6px 12px;font-size:12px">去完成</button>
+</div>
+</div>
+</div>
+<div class="section-title">整改闭环</div>
+<div class="chart-card">
+<div class="chart-title">PR-20260626-003</div>
+<div style="padding:8px 0">
+<div style="font-size:13px;color:#666;margin-bottom:12px">天台区地面清洁不到位 | 责任人: 张小明</div>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<div style="flex:1;text-align:center;padding:8px;background:#f6ffed;border-radius:8px">
+<div style="font-size:12px;color:#666">发现</div>
+<div style="font-size:11px;color:#999">09:30</div>
+</div>
+<div style="flex:1;text-align:center;padding:8px;background:#f6ffed;border-radius:8px">
+<div style="font-size:12px;color:#666">推送</div>
+<div style="font-size:11px;color:#999">09:31</div>
+</div>
+<div style="flex:1;text-align:center;padding:8px;background:#fff7e6;border-radius:8px">
+<div style="font-size:12px;color:#666">整改</div>
+<div style="font-size:11px;color:#999">进行中</div>
+</div>
+<div style="flex:1;text-align:center;padding:8px;background:#f5f5f5;border-radius:8px">
+<div style="font-size:12px;color:#666">复检</div>
+<div style="font-size:11px;color:#999">待完成</div>
+</div>
+</div>
+<button class="btn-m btn-m-primary">上传整改照片</button>
+</div>
+</div>
+</div>
+
+
+<!-- ===== 培训学习 ===== -->
+<div class="page" id="page-training">
+<div class="nav-header">
+<div class="back" onclick="goTo('me')"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></div>
+<div class="title">培训学习</div>
+<div class="right"></div>
+</div>
+<div class="filter-tabs" style="padding:12px 16px">
+<div class="filter-tab active">SOP视频</div>
+<div class="filter-tab">AI评估</div>
+<div class="filter-tab">考试</div>
+</div>
+<div class="alert-list">
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9);width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#fff"><path d="M8 5v14l11-7z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">标准摆盘操作示范</div>
+<div class="item-desc">岗位: 厨师 | 技能: 摆盘 | 12:35</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--success);font-size:12px">已学习</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64);width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#fff"><path d="M8 5v14l11-7z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">桌面清洁SOP流程</div>
+<div class="item-desc">岗位: 服务员 | 技能: 清洁 | 08:20</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--primary);font-size:12px">未开始</div>
+</div>
+</div>
+<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
+<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666);width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#fff"><path d="M8 5v14l11-7z"/></svg>
+</div>
+<div class="item-body">
+<div class="item-title">顾客服务礼仪规范</div>
+<div class="item-desc">岗位: 服务员 | 技能: 服务 | 15:45</div>
+</div>
+<div class="item-right">
+<div class="value" style="color:var(--warning);font-size:12px">学习中</div>
+</div>
+</div>
+</div>
+<div style="padding:16px">
+<button class="btn-m btn-m-primary" onclick="showToastM('开始学习选中课程','success')">开始学习</button>
+</div>
+</div>
+
+<!-- ===== 绩效查看 ===== -->
+<div class="page" id="page-performance">
+<div class="nav-header">
+<div class="back" onclick="goTo('me')"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></div>
+<div class="title">我的绩效</div>
+<div class="right"></div>
+</div>
+<div class="stat-grid" style="padding:16px">
+<div class="stat-card-m">
+<div class="label">本月离岗次数</div>
+<div class="value" style="color:var(--primary)">2</div>
+<div class="trend down">较上月 -3</div>
+</div>
+<div class="stat-card-m">
+<div class="label">清洁达标率</div>
+<div class="value" style="color:var(--success)">98.5%</div>
+<div class="trend up">目标≥98%</div>
+</div>
+<div class="stat-card-m">
+<div class="label">合规检测</div>
+<div class="value" style="color:var(--success)">96.2%</div>
+<div class="trend up">优秀</div>
+</div>
+<div class="stat-card-m">
+<div class="label">培训进度</div>
+<div class="value" style="color:var(--warning)">75%</div>
+<div class="trend up">3/4 完成</div>
+</div>
+</div>
+<div class="chart-card">
+<div class="chart-title">近30日绩效趋势</div>
+<div style="display:flex;align-items:flex-end;justify-content:space-around;height:140px;padding:16px 0">
+<div style="text-align:center"><div style="width:24px;background:var(--primary);border-radius:4px 4px 0 0;height:80px;margin:0 auto 4px"></div><div style="font-size:11px;color:#999">W1</div></div>
+<div style="text-align:center"><div style="width:24px;background:var(--primary);border-radius:4px 4px 0 0;height:100px;margin:0 auto 4px"></div><div style="font-size:11px;color:#999">W2</div></div>
+<div style="text-align:center"><div style="width:24px;background:var(--success);border-radius:4px 4px 0 0;height:120px;margin:0 auto 4px"></div><div style="font-size:11px;color:#999">W3</div></div>
+<div style="text-align:center"><div style="width:24px;background:var(--success);border-radius:4px 4px 0 0;height:130px;margin:0 auto 4px"></div><div style="font-size:11px;color:#999">W4</div></div>
+</div>
+</div>
+</div>
+
+<!-- ===== 设置 ===== -->
+<div class="page" id="page-settings">
+<div class="nav-header">
+<div class="back" onclick="goTo('me')"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></div>
+<div class="title">设置</div>
+<div class="right"></div>
+</div>
+<div class="profile-menu">
+<div class="profile-menu-item">
+<div class="menu-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+<div class="menu-title">消息推送设置</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+<div class="profile-menu-item">
+<div class="menu-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 6c1.66 0 3 1.34 3 3v2H9V9c0-1.66 1.34-3 3-3z"/></svg></div>
+<div class="menu-title">修改密码</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+<div class="profile-menu-item">
+<div class="menu-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M11 18h2v-3h3v-2h-3v-3h-2v3H8v2h3v3zm1-12c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9zm0-2C6.48 4 2 8.48 2 14s4.48 10 10 10 10-4.48 10-10S17.52 4 12 4z"/></svg></div>
+<div class="menu-title">关于我们</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+</div>
+<div style="padding:16px">
+<button class="btn-m btn-m-danger" onclick="logoutM()">退出登录</button>
+</div>
+</div>
+
+<!-- 全局 Loading -->
+<div class="loading-overlay-m" id="globalLoadingM"><div class="spinner-m"></div><div class="loading-text-m">加载中...</div></div>
+
+<!-- 全局弹窗 -->
+<div class="modal-overlay-m" id="globalModalM">
+<div class="modal-m">
+<div class="modal-header-m"><h3 id="modalTitleM">提示</h3><button class="modal-close-m" onclick="closeModalM()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+<div class="modal-body-m" id="modalBodyM">内容</div>
+<div class="modal-footer-m" id="modalFooterM"><button class="btn-m btn-m-default" onclick="closeModalM()">关闭</button></div>
+</div>
+</div>
+
+<!-- ===== 消息 ===== -->
+<div class="page" id="page-messages">
+<div class="nav-header">
+<div class="back" onclick="goTo('home')">
+<svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+</div>
+<div class="title">消息中心</div>
+<div class="right"></div>
+</div>
+<div class="msg-item unread">
+<div class="msg-dot"></div>
+<div class="msg-body">
+<div class="msg-title">后厨动火区域离人告警</div>
+<div class="msg-desc">A区灶台离人超过5秒，已触发安全告警，请立即处理</div>
+<div class="msg-time">10:23:15</div>
+</div>
+</div>
+<div class="msg-item unread">
+<div class="msg-dot"></div>
+<div class="msg-body">
+<div class="msg-title">出品评分预警</div>
+<div class="msg-desc">菜品「宫保鸡丁」评分72分，低于80分阈值，请复核</div>
+<div class="msg-time">10:18:42</div>
+</div>
+</div>
+<div class="msg-item">
+<div class="msg-dot" style="background:transparent"></div>
+<div class="msg-body">
+<div class="msg-title">库存不足提醒</div>
+<div class="msg-desc">毛肚库存低于安全阈值（剩12kg），建议采购</div>
+<div class="msg-time">09:45:00</div>
+</div>
+</div>
+<div class="msg-item">
+<div class="msg-dot" style="background:transparent"></div>
+<div class="msg-body">
+<div class="msg-title">清洁超时告警</div>
+<div class="msg-desc">天台区12号桌清洁超时10分钟，请指派人员处理</div>
+<div class="msg-time">09:30:00</div>
+</div>
+</div>
+<div style="padding:16px">
+<button class="btn-m btn-m-default">一键已读</button>
+</div>
+</div>
+
+<!-- ===== 我的 ===== -->
+<div class="page" id="page-me">
+<div class="profile-header">
+<div class="avatar">张</div>
+<div class="name">张店长</div>
+<div class="role">宝记松间 · 天台店店长</div>
+</div>
+<div class="profile-menu">
+<div class="profile-menu-item" onclick="goTo('messages')">
+<div class="menu-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9)">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+</div>
+<div class="menu-title">消息中心</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+<div class="profile-menu-item">
+<div class="menu-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div class="menu-title">培训学习</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+<div class="profile-menu-item">
+<div class="menu-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.27.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+</div>
+<div class="menu-title">绩效查看</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+<div class="profile-menu-item">
+<div class="menu-icon" style="background:linear-gradient(135deg,#722ed1,#b37feb)">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.27.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+</div>
+<div class="menu-title">设置</div>
+<div class="menu-arrow"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+</div>
+</div>
+<div style="padding:16px">
+<button class="btn-m btn-m-danger" onclick="logoutM()">退出登录</button>
+</div>
+</div>
+
+</div>
+
+<!-- 底部导航 -->
+<div class="tab-bar" id="tabBar">
+<div class="tab-item active" onclick="switchTab('home',this)">
+<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+<span>首页</span>
+</div>
+<div class="tab-item" onclick="switchTab('front',this)">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+<span>前厅</span>
+</div>
+<div class="tab-item" onclick="switchTab('kitchen',this)">
+<svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 4h5v2h-5V6zm0 4h5v2h-5v-2zm0 4h5v2h-5v-2zM7 6h4v2H7V6zm0 4h4v2H7v-2zm0 4h4v2H7v-2z"/></svg>
+<span>后厨</span>
+</div>
+<div class="tab-item" onclick="switchTab('inventory',this)">
+<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+<span>库存</span>
+</div>
+<div class="tab-item" onclick="switchTab('me',this)">
+<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+<span>我的</span>
+</div>
+</div>
+</div>
+
+<script>
+let currentRoleM='manager';
+let currentTab='home';
+
+function updateTime(){
+const now=new Date();
+const h=now.getHours().toString().padStart(2,'0');
+const m=now.getMinutes().toString().padStart(2,'0');
+document.getElementById('statusTime').textContent=h+':'+m;
+}
+setInterval(updateTime,1000);
+updateTime();
+
+function selectRoleM(el,role){
+document.querySelectorAll('.role-tag').forEach(t=>t.classList.remove('active'));
+el.classList.add('active');
+currentRoleM=role;
+}
+
+function wxLogin(){
+showLoadingM('正在登录...');
+setTimeout(()=>{
+document.getElementById('page-login').classList.remove('active');
+document.getElementById('page-home').classList.add('active');
+hideLoadingM();
+showToastM('微信登录成功','success');
+startDataSimM();
+},800);
+}
+
+function loginM(){
+showLoadingM('正在登录...');
+setTimeout(()=>{
+document.getElementById('page-login').classList.remove('active');
+document.getElementById('page-home').classList.add('active');
+hideLoadingM();
+showToastM('登录成功','success');
+startDataSimM();
+},800);
+}
+
+function switchTab(tab,el){
+if(el){
+document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+el.classList.add('active');
+}
+if(tab==='home'){
+showPage('home');
+}else{
+showPage('page-'+tab);
+}
+}
+
+function goTo(page){
+showLoadingM();
+setTimeout(()=>{
+if(page==='home'){
+showPage('home');
+showTab('home');
+}else if(page==='messages'){
+showPage('page-messages');
+hideTabBar();
+}else if(page==='front'){
+showPage('page-front');
+showTabBar();
+}else if(page==='kitchen'){
+showPage('page-kitchen');
+showTabBar();
+}else if(page==='inventory'){
+showPage('page-inventory');
+showTabBar();
+}else if(page==='inspect'){
+showPage('page-inspect');
+showTabBar();
+}else if(page==='me'){
+showPage('page-me');
+showTabBar();
+}else if(page==='training'){
+showPage('page-training');
+hideTabBar();
+}else if(page==='performance'){
+showPage('page-performance');
+hideTabBar();
+}else if(page==='settings'){
+showPage('page-settings');
+hideTabBar();
+}
+hideLoadingM();
+},300);
+}
+
+function showPage(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id==='home'?'page-home':id).classList.add('active');
+document.querySelector('.pages').scrollTop=0;
+}
+
+function showTabBar(){
+document.getElementById('tabBar').style.display='flex';
+}
+
+function hideTabBar(){
+document.getElementById('tabBar').style.display='none';
+}
+
+function showTab(tab){
+document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+const tabs=['home','front','kitchen','inventory','me'];
+const idx=tabs.indexOf(tab);
+if(idx>=0)document.querySelectorAll('.tab-item')[idx].classList.add('active');
+}
+
+function showAlertDetail(){
+alert('告警详情：\n\n类型：安全告警\n内容：后厨A区灶台离人超过5秒\n时间：10:23:15\n位置：后厨-A区灶台\n\n建议：立即指派人员到灶台区域，确认火源已关闭。');
+}
+
+function logoutM(){
+if(confirm('确定要退出登录吗？')){
+location.reload();
+}
+}
+
+// 绘制移动端图表
+function drawBarM(id,data,labels,color){
+const el=document.getElementById(id);
+if(!el)return;
+const w=el.clientWidth,h=el.clientHeight;
+const pad=30,max=Math.max(...data)*1.2;
+const barW=(w-2*pad)/data.length*0.6;
+let svg=`<svg width="${w}" height="${h}">`;
+for(let i=0;i<=4;i++){
+const y=h-pad-(i*(h-2*pad)/4);
+svg+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+}
+data.forEach((v,i)=>{
+const x=pad+(i+0.2)*(w-2*pad)/data.length;
+const bh=(v/max)*(h-2*pad);
+const y=h-pad-bh;
+svg+=`<rect x="${x}" y="${y}" width="${barW}" height="${bh}" fill="${color}" rx="3"/>`;
+svg+=`<text x="${x+barW/2}" y="${y-4}" text-anchor="middle" font-size="10" fill="#666">${v}</text>`;
+svg+=`<text x="${x+barW/2}" y="${h-8}" text-anchor="middle" font-size="10" fill="#999">${labels[i]}</text>`;
+});
+svg+=`</svg>`;
+el.innerHTML=svg;
+}
+
+setTimeout(()=>{
+drawBarM('chart-wait-m',[15,22,30,25,18,12,20],['8:00','10:00','12:00','14:00','16:00','18:00','20:00'],'#1890ff');
+},300);
+
+
+// ===== Toast =====
+function showToastM(msg, type='info', duration=3000){
+    let container=document.querySelector('.toast-container-m');
+    if(!container){
+        container=document.createElement('div');
+        container.className='toast-container-m';
+        document.body.appendChild(container);
+    }
+    const toast=document.createElement('div');
+    toast.className='toast-item-m '+type;
+    const colors={success:'#52c41a',error:'#f5222d',warning:'#faad14',info:'#1890ff'};
+    const icons={success:'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',error:'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',warning:'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z',info:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'};
+    toast.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="'+colors[type]+'" style="flex-shrink:0"><path d="'+icons[type]+'"/></svg><span>'+msg+'</span>';
+    container.appendChild(toast);
+    setTimeout(()=>{toast.style.animation='toastOutM 0.3s ease';setTimeout(()=>toast.remove(),300);},duration);
+}
+
+// ===== Loading =====
+function showLoadingM(text='加载中...'){
+    const el=document.getElementById('globalLoadingM');
+    if(el){el.querySelector('.loading-text-m').textContent=text;el.classList.add('active');}
+}
+function hideLoadingM(){
+    const el=document.getElementById('globalLoadingM');
+    if(el)el.classList.remove('active');
+}
+
+// ===== Modal =====
+function openModalM(title, body, footer){
+    document.getElementById('modalTitleM').textContent=title||'提示';
+    document.getElementById('modalBodyM').innerHTML=body||'内容';
+    document.getElementById('modalFooterM').innerHTML=footer||'<button class="btn-m btn-m-default" onclick="closeModalM()">关闭</button>';
+    document.getElementById('globalModalM').classList.add('active');
+}
+function closeModalM(){
+    document.getElementById('globalModalM').classList.remove('active');
+}
+
+// ===== 数据模拟 =====
+function startDataSimM(){
+    setInterval(()=>{
+        const home=document.getElementById('page-home');
+        if(!home||!home.classList.contains('active'))return;
+        const values=home.querySelectorAll('.stat-card-m .value');
+        if(values[0]){
+            let current=parseInt(values[0].textContent.replace(/,/g,''))||1284;
+            current+=Math.floor(Math.random()*2);
+            values[0].textContent=current.toLocaleString();
+        }
+    },30000);
+}
+
+// ===== 事件委托：按钮反馈 =====
+document.addEventListener('click',function(e){
+    const btn=e.target.closest('.btn-m');
+    if(!btn)return;
+    const onclick=btn.getAttribute('onclick');
+    if(onclick && onclick.trim().length>0 && !onclick.includes('showToastM'))return;
+    const text=btn.textContent.trim();
+    if(text==='关闭')return;
+    if(text==='微信一键登录'){}
+    else if(text==='登录'){}
+    else if(text==='去完成'){showToastM('任务已开始','success');}
+    else if(text==='采购'){openModalM('采购确认','确认采购毛肚 30kg？','<button class="btn-m btn-m-default" onclick="closeModalM()">取消</button><button class="btn-m btn-m-primary" onclick="showToastM('采购订单已生成','success');closeModalM()">确认</button>');}
+    else if(text==='处理'){showToastM('处理流程已启动','info');}
+    else if(text==='去学习'){showToastM('开始学习课程','success');}
+    else if(text===''){}
+    else{showToastM('功能演示中：'+text,'info');}
+});
+
+</script>
+</body>
+</html>

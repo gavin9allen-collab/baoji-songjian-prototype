@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宝记松间 AI视觉智慧店长 - Web端管理后台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif}
+:root{--primary:#1890ff;--primary-dark:#096dd9;--success:#52c41a;--warning:#faad14;--danger:#f5222d;--bg:#f0f2f5;--sidebar:#001529;--sidebar-light:#002140;--text:#333;--text-light:#666;--border:#e8e8e8;--card-bg:#fff;--header-height:64px;--sidebar-width:220px}
+body{background:var(--bg);color:var(--text);font-size:14px;overflow:hidden}
+
+/* ===== 登录页 ===== */
+.login-page{position:fixed;inset:0;background:linear-gradient(135deg,#001529 0%,#1890ff 100%);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:#fff;padding:40px 50px;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.3);width:420px;text-align:center}
+.login-box h1{font-size:24px;color:#001529;margin-bottom:8px;font-weight:600}
+.login-box .subtitle{font-size:14px;color:#888;margin-bottom:32px}
+.login-box .logo-icon{width:64px;height:64px;background:linear-gradient(135deg,#1890ff,#52c41a);border-radius:16px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
+.login-box .logo-icon svg{width:36px;height:36px;fill:#fff}
+.role-select{display:flex;gap:12px;margin-bottom:24px;justify-content:center}
+.role-btn{flex:1;padding:10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .2s;background:#fff;color:var(--text)}
+.role-btn:hover{border-color:var(--primary);color:var(--primary)}
+.role-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.role-btn .icon{font-size:20px;margin-bottom:4px;display:block}
+.input-group{margin-bottom:16px;text-align:left}
+.input-group label{display:block;margin-bottom:6px;font-size:13px;color:#555;font-weight:500}
+.input-group input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:4px;font-size:14px;transition:border .2s}
+.input-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(24,144,255,0.1)}
+.login-btn{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:16px;cursor:pointer;transition:background .2s;margin-top:8px}
+.login-btn:hover{background:var(--primary-dark)}
+
+/* ===== 主框架 ===== */
+.app{display:none;height:100vh}
+.app.active{display:flex}
+
+/* 侧边栏 */
+.sidebar{width:var(--sidebar-width);background:var(--sidebar);color:#fff;flex-shrink:0;overflow-y:auto;transition:width .3s}
+.sidebar .brand{height:var(--header-height);display:flex;align-items:center;padding:0 20px;background:#002140;position:sticky;top:0;z-index:10}
+.sidebar .brand svg{width:28px;height:28px;fill:#fff;margin-right:12px}
+.sidebar .brand span{font-size:16px;font-weight:600;white-space:nowrap}
+.menu-item{padding:12px 20px;cursor:pointer;transition:background .2s;display:flex;align-items:center;color:rgba(255,255,255,0.75);border-left:3px solid transparent}
+.menu-item:hover{background:var(--sidebar-light);color:#fff}
+.menu-item.active{background:var(--primary);color:#fff;border-left-color:#52c41a}
+.menu-item svg{width:18px;height:18px;margin-right:12px;fill:currentColor;flex-shrink:0}
+.menu-item .arrow{margin-left:auto;transition:transform .2s}
+.menu-item.expanded .arrow{transform:rotate(90deg)}
+.submenu{padding-left:48px;background:#000c17;overflow:hidden;max-height:0;transition:max-height .3s}
+.submenu.open{max-height:500px}
+.submenu-item{padding:10px 16px;cursor:pointer;color:rgba(255,255,255,0.65);font-size:13px;transition:color .2s;border-left:2px solid transparent}
+.submenu-item:hover{color:#fff}
+.submenu-item.active{color:#fff;border-left-color:#52c41a}
+
+/* 顶部 */
+.header{height:var(--header-height);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-left .breadcrumb{font-size:14px;color:var(--text-light)}
+.header-left .breadcrumb span{color:var(--text);font-weight:500}
+.header-right{display:flex;align-items:center;gap:20px}
+.header-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;position:relative}
+.header-icon:hover{background:var(--bg)}
+.header-icon svg{width:20px;height:20px;fill:var(--text-light)}
+.badge{position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--danger);border-radius:50%;border:2px solid #fff}
+.badge.num{top:-2px;right:-2px;width:18px;height:18px;font-size:11px;color:#fff;display:flex;align-items:center;justify-content:center;border:none}
+.user-info{display:flex;align-items:center;gap:10px;cursor:pointer}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px}
+.user-name{font-size:14px;color:var(--text)}
+.user-role{font-size:12px;color:var(--text-light)}
+
+/* 内容区 */
+.main-content{flex:1;overflow-y:auto;padding:24px;min-height:0}
+.page{display:none}
+.page.active{display:block}
+
+/* 卡片 */
+.card{background:var(--card-bg);border-radius:8px;padding:24px;margin-bottom:24px;box-shadow:0 1px 2px rgba(0,0,0,0.06)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.card-title{font-size:18px;font-weight:600;color:var(--text)}
+.card-subtitle{font-size:13px;color:var(--text-light);margin-top:4px}
+.card-extra{display:flex;gap:10px;align-items:center}
+
+/* 数据卡片 */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-bottom:24px}
+.stat-card{background:var(--card-bg);border-radius:8px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,0.06);display:flex;align-items:flex-start;gap:16px;transition:transform .2s,box-shadow .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.stat-icon{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-icon svg{width:24px;height:24px;fill:#fff}
+.stat-icon.blue{background:linear-gradient(135deg,#1890ff,#36cfc9)}
+.stat-icon.green{background:linear-gradient(135deg,#52c41a,#95de64)}
+.stat-icon.orange{background:linear-gradient(135deg,#faad14,#ffd666)}
+.stat-icon.red{background:linear-gradient(135deg,#f5222d,#ff7875)}
+.stat-body{flex:1}
+.stat-value{font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px}
+.stat-label{font-size:13px;color:var(--text-light);margin-bottom:6px}
+.stat-trend{font-size:12px;display:flex;align-items:center;gap:4px}
+.stat-trend.up{color:var(--danger)}
+.stat-trend.down{color:var(--success)}
+.stat-trend svg{width:12px;height:12px;fill:currentColor}
+
+/* 图表区域 */
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:24px}
+.chart-col-1{grid-template-columns:1fr 2fr}
+.chart-box{background:var(--card-bg);border-radius:8px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,0.06)}
+.chart-box .chart-title{font-size:16px;font-weight:600;margin-bottom:16px}
+.chart-container{height:300px;position:relative}
+
+/* 表格 */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#fafafa;padding:12px 16px;text-align:left;font-weight:600;color:#555;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:hover td{background:#f6ffed}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500}
+.tag-green{background:#f6ffed;color:#389e0d;border:1px solid #b7eb8f}
+.tag-orange{background:#fff7e6;color:#d48806;border:1px solid #ffd591}
+.tag-red{background:#fff1f0;color:#cf1322;border:1px solid #ffa39e}
+.tag-blue{background:#e6f7ff;color:#096dd9;border:1px solid #91d5ff}
+.tag-gray{background:#f5f5f5;color:#595959;border:1px solid #d9d9d9}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-dot.green{background:var(--success)}
+.status-dot.orange{background:var(--warning)}
+.status-dot.red{background:var(--danger)}
+
+/* 进度条 */
+.progress-bar{height:8px;background:#f5f5f5;border-radius:4px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:4px;transition:width .3s}
+.progress-fill.green{background:var(--success)}
+.progress-fill.orange{background:var(--warning)}
+.progress-fill.red{background:var(--danger)}
+.progress-fill.blue{background:var(--primary)}
+
+/* 按钮 */
+.btn{padding:6px 16px;border-radius:4px;border:1px solid transparent;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn svg{width:14px;height:14px;fill:currentColor}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-default{background:#fff;border-color:var(--border);color:var(--text)}
+.btn-default:hover{border-color:var(--primary);color:var(--primary)}
+.btn-success{background:var(--success);color:#fff;border-color:var(--success)}
+.btn-danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn-sm{padding:4px 12px;font-size:12px}
+.btn-group{display:flex;gap:8px}
+
+/* 筛选栏 */
+.filter-bar{display:flex;gap:12px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+.filter-bar input,.filter-bar select{padding:6px 12px;border:1px solid var(--border);border-radius:4px;font-size:13px;min-width:140px}
+.filter-bar input:focus,.filter-bar select:focus{outline:none;border-color:var(--primary)}
+
+/* 地图/区域可视化 */
+.zone-map{background:#fafafa;border-radius:8px;padding:24px;min-height:400px;position:relative}
+.zone-area{border:2px dashed #d9d9d9;border-radius:8px;padding:16px;margin-bottom:16px;background:#fff;position:relative}
+.zone-area.active{border-color:var(--primary);background:#e6f7ff}
+.zone-area .zone-title{font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.zone-area .zone-title svg{width:20px;height:20px;fill:var(--primary)}
+.zone-seats{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+.seat{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.seat.free{background:#f6ffed;color:#389e0d;border:1px solid #b7eb8f}
+.seat.occupied{background:#fff1f0;color:#cf1322;border:1px solid #ffa39e}
+.seat.cleaning{background:#fff7e6;color:#d48806;border:1px solid #ffd591}
+.seat:hover{transform:scale(1.1);z-index:2}
+
+/* 热力图 */
+.heatmap{background:#fff;border-radius:8px;padding:16px;height:300px;position:relative;overflow:hidden}
+.heatmap-cell{position:absolute;width:30px;height:30px;border-radius:4px;transition:all .3s}
+
+/* 列表项 */
+.list-item{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;transition:background .2s}
+.list-item:hover{background:#fafafa}
+.list-item:last-child{border-bottom:none}
+.list-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.list-icon svg{width:20px;height:20px;fill:#fff}
+.list-body{flex:1}
+.list-title{font-weight:600;margin-bottom:4px}
+.list-desc{font-size:13px;color:var(--text-light)}
+.list-meta{font-size:12px;color:#999;margin-top:4px}
+.list-action{display:flex;gap:8px;align-items:center}
+
+/* 时间轴 */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:#f0f0f0}
+.timeline-item{position:relative;padding-bottom:20px}
+.timeline-item::before{content:'';position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--primary)}
+.timeline-item.completed::before{border-color:var(--success);background:var(--success)}
+.timeline-item.rejected::before{border-color:var(--danger);background:var(--danger)}
+.timeline-time{font-size:12px;color:#999;margin-bottom:4px}
+.timeline-content{background:#fafafa;padding:12px;border-radius:6px}
+.timeline-title{font-weight:600;margin-bottom:4px}
+
+/* 弹窗 */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:8px;width:600px;max-width:90%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:16px;font-weight:600}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:var(--bg)}
+.modal-close svg{width:16px;height:16px;fill:var(--text-light)}
+.modal-body{padding:24px}
+.modal-footer{padding:12px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+/* 分页 */
+.pagination{display:flex;justify-content:flex-end;gap:6px;margin-top:16px;align-items:center}
+.pagination button{padding:4px 10px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;font-size:13px}
+.pagination button:hover{border-color:var(--primary);color:var(--primary)}
+.pagination button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pagination .info{font-size:13px;color:#999;margin-right:10px}
+
+/* 响应式 */
+@media (max-width:1200px){
+.stat-cards{grid-template-columns:repeat(2,1fr)}
+.chart-row{grid-template-columns:1fr}
+}
+@media (max-width:768px){
+.stat-cards{grid-template-columns:1fr}
+.sidebar{width:0}
+.sidebar.open{width:var(--sidebar-width)}
+}
+
+/* 动画 */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page.active .card{animation:fadeIn .3s ease both}
+.page.active .stat-card{animation:fadeIn .3s ease both}
+.page.active .stat-card:nth-child(1){animation-delay:0ms}
+.page.active .stat-card:nth-child(2){animation-delay:50ms}
+.page.active .stat-card:nth-child(3){animation-delay:100ms}
+.page.active .stat-card:nth-child(4){animation-delay:150ms}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#999}
+</style>
+</head>
+<body>
+
+<!-- ===== 登录页 ===== -->
+<div class="login-page" id="loginPage">
+<div class="login-box">
+<div class="logo-icon">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+</div>
+<h1>AI视觉智慧店长</h1>
+<p class="subtitle">宝记松间 - 智能餐饮门店管理系统</p>
+<div class="role-select">
+<div class="role-btn active" onclick="selectRole(this,'admin')">
+<span class="icon">👤</span>
+<div>管理员</div>
+</div>
+<div class="role-btn" onclick="selectRole(this,'manager')">
+<span class="icon">🏪</span>
+<div>店长</div>
+</div>
+<div class="role-btn" onclick="selectRole(this,'staff')">
+<span class="icon">🧑‍🍳</span>
+<div>店员</div>
+</div>
+</div>
+<div class="input-group">
+<label>账号</label>
+<input type="text" placeholder="请输入账号" value="admin" id="username">
+</div>
+<div class="input-group">
+<label>密码</label>
+<input type="password" placeholder="请输入密码" value="123456" id="password">
+</div>
+<button class="login-btn" onclick="login()">登 录</button>
+</div>
+</div>
+
+<!-- ===== 主应用 ===== -->
+<div class="app" id="app">
+<!-- 侧边栏 -->
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+<span>宝记松间智慧店长</span>
+</div>
+<nav id="menuNav"></nav>
+</aside>
+
+<!-- 内容区 -->
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<!-- 顶部 -->
+<header class="header">
+<div class="header-left">
+<span class="breadcrumb" id="breadcrumb">首页</span>
+</div>
+<div class="header-right">
+<div class="header-icon" onclick="showMessages()">
+<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+<span class="badge num" id="msgBadge">12</span>
+</div>
+<div class="header-icon" onclick="showAlerts()">
+<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+<span class="badge num" id="alertBadge">5</span>
+</div>
+<div class="user-info" onclick="showUserMenu()">
+<div class="user-avatar" id="userAvatar">管</div>
+<div>
+<div class="user-name" id="userName">系统管理员</div>
+<div class="user-role" id="userRole">管理员</div>
+</div>
+</div>
+</div>
+</header>
+
+<!-- 页面内容 -->
+<main class="main-content" id="mainContent">
+
+<!-- 首页仪表盘 -->
+<div class="page active" id="page-dashboard">
+<div class="stat-cards">
+<div class="stat-card">
+<div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">1,284</div>
+<div class="stat-label">今日客流人次</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>较昨日 +12.5%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">86.4%</div>
+<div class="stat-label">今日翻台率</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>较昨日 +8.2%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">18.2min</div>
+<div class="stat-label">平均等餐时长</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>较昨日 -3.5min</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon red"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">94.2%</div>
+<div class="stat-label">合规检测率</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>较昨日 +2.1%</div>
+</div>
+</div>
+</div>
+
+<div class="chart-row">
+<div class="chart-box">
+<div class="chart-title">今日客流趋势（小时）</div>
+<div class="chart-container" id="chart-flow"></div>
+</div>
+<div class="chart-box">
+<div class="chart-title">区域客流分布</div>
+<div class="chart-container" id="chart-zone"></div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">待办事项</div>
+<div class="card-subtitle">需要您处理的告警与任务</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-default">查看全部</button>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>类型</th><th>内容</th><th>来源</th><th>时间</th><th>优先级</th><th>操作</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="tag tag-red">安全告警</span></td><td>后厨动火区域离人超过5秒</td><td>后厨-A区灶台</td><td>10:23:15</td><td><span class="tag tag-red">紧急</span></td><td><button class="btn btn-primary btn-sm">立即处理</button></td></tr>
+<tr><td><span class="tag tag-orange">出品预警</span></td><td>菜品「麻辣毛肚」评分低于80分</td><td>后厨-出品检测</td><td>10:18:42</td><td><span class="tag tag-orange">高</span></td><td><button class="btn btn-primary btn-sm">查看</button></td></tr>
+<tr><td><span class="tag tag-orange">清洁超时</span></td><td>天台区12号桌清洁超时10分钟</td><td>前厅-天台区</td><td>10:15:20</td><td><span class="tag tag-orange">高</span></td><td><button class="btn btn-primary btn-sm">指派</button></td></tr>
+<tr><td><span class="tag tag-blue">库存预警</span></td><td>毛肚库存低于安全阈值（剩12kg）</td><td>供应链-库存</td><td>09:45:00</td><td><span class="tag tag-blue">中</span></td><td><button class="btn btn-primary btn-sm">采购</button></td></tr>
+<tr><td><span class="tag tag-gray">巡检任务</span></td><td>今日门店自检任务待完成（18/20项）</td><td>巡检-自检</td><td>09:00:00</td><td><span class="tag tag-gray">低</span></td><td><button class="btn btn-default btn-sm">继续</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- 前厅管理-客流识别 -->
+<div class="page" id="page-front-flow">
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">实时区域座位状态</div>
+<div class="card-subtitle">AI视觉实时侦测空桌，5秒自动刷新</div>
+</div>
+<div class="card-extra">
+<div class="btn-group">
+<span class="tag tag-green">● 空闲</span>
+<span class="tag tag-red">● 占用</span>
+<span class="tag tag-orange">● 待清洁</span>
+</div>
+<button class="btn btn-primary">刷新</button>
+</div>
+</div>
+<div class="zone-map">
+<div class="zone-area active">
+<div class="zone-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>天台区（客流密度: 78%）<span class="tag tag-orange">预警</span></div>
+<div class="zone-seats" id="seats-outdoor"></div>
+</div>
+<div class="zone-area">
+<div class="zone-title"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>室内区（客流密度: 62%）<span class="tag tag-green">正常</span></div>
+<div class="zone-seats" id="seats-indoor"></div>
+</div>
+</div>
+</div>
+<div class="chart-row">
+<div class="chart-box">
+<div class="chart-title">今日客流密度趋势</div>
+<div class="chart-container" id="chart-flow2"></div>
+</div>
+<div class="chart-box">
+<div class="chart-title">满座率预警记录</div>
+<div class="table-wrap" style="max-height:300px;overflow-y:auto">
+<table>
+<thead><tr><th>时间</th><th>区域</th><th>密度</th><th>状态</th><th>处理</th></tr></thead>
+<tbody>
+<tr><td>10:20</td><td>天台区</td><td>82%</td><td><span class="tag tag-orange">已触发</span></td><td>已通知店长</td></tr>
+<tr><td>09:45</td><td>室内区</td><td>85%</td><td><span class="tag tag-green">已恢复</span></td><td>已分流</td></tr>
+<tr><td>09:10</td><td>天台区</td><td>88%</td><td><span class="tag tag-green">已恢复</span></td><td>已加座</td></tr>
+<tr><td>08:30</td><td>室内区</td><td>81%</td><td><span class="tag tag-green">已恢复</span></td><td>已分流</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 前厅管理-定人定岗 -->
+<div class="page" id="page-front-staff">
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">区域人员绑定配置</div>
+<div class="card-subtitle">拖拽绑定人员与区域（主责1个+副责最多2个）</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-primary">+ 新增绑定</button>
+<button class="btn btn-default">批量配置</button>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>人员</th><th>岗位</th><th>主责区域</th><th>副责区域</th><th>绑定状态</th><th>当前状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td><strong>张小明</strong></td><td>服务员</td><td>天台区 A01-A10</td><td>天台区 B01-B05</td><td><span class="tag tag-green">已绑定</span></td><td><span class="status-dot green"></span>在岗</td><td><button class="btn btn-default btn-sm">编辑</button></td></tr>
+<tr><td><strong>李小红</strong></td><td>服务员</td><td>天台区 B06-B15</td><td>室内区 C01-C05</td><td><span class="tag tag-green">已绑定</span></td><td><span class="status-dot green"></span>在岗</td><td><button class="btn btn-default btn-sm">编辑</button></td></tr>
+<tr><td><strong>王大力</strong></td><td>领班</td><td>室内区 C01-C20</td><td>—</td><td><span class="tag tag-green">已绑定</span></td><td><span class="status-dot orange"></span>离岗(6min)</td><td><button class="btn btn-default btn-sm">编辑</button></td></tr>
+<tr><td><strong>赵小美</strong></td><td>服务员</td><td>室内区 D01-D10</td><td>室内区 C15-C20</td><td><span class="tag tag-green">已绑定</span></td><td><span class="status-dot green"></span>在岗</td><td><button class="btn btn-default btn-sm">编辑</button></td></tr>
+<tr><td><strong>陈小刚</strong></td><td>服务员</td><td>—</td><td>—</td><td><span class="tag tag-gray">未绑定</span></td><td><span class="status-dot green"></span>在岗</td><td><button class="btn btn-primary btn-sm">绑定</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">离岗实时检测</div>
+<div class="card-subtitle">阈值: 5分钟（可配置1-10分钟）</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-default">告警配置</button>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>人员</th><th>责任区域</th><th>离岗时间</th><th>当前位置</th><th>告警级别</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td>王大力</td><td>室内区 C01-C20</td><td>06:23</td><td>天台区（非责任区）</td><td><span class="tag tag-orange">二级</span></td><td><span class="tag tag-orange">待处理</span></td><td><button class="btn btn-primary btn-sm">确认</button></td></tr>
+<tr><td>刘小强</td><td>室内区 D01-D10</td><td>03:15</td><td>室内区（非责任区）</td><td><span class="tag tag-green">已恢复</span></td><td><span class="tag tag-green">已确认</span></td><td><button class="btn btn-default btn-sm">详情</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- 前厅管理-服务效率 -->
+<div class="page" id="page-front-service">
+<div class="stat-cards">
+<div class="stat-card">
+<div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">42min</div>
+<div class="stat-label">平均翻台时长</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>目标≤45min</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">3.2次</div>
+<div class="stat-label">今日平均翻台次数</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>较昨日 +0.4</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">8.5%</div>
+<div class="stat-label">清洁超时率</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>目标<10%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon red"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">18.2min</div>
+<div class="stat-label">平均等餐时长</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>目标<20min</div>
+</div>
+</div>
+</div>
+<div class="chart-row">
+<div class="chart-box">
+<div class="chart-title">翻台时长趋势（今日）</div>
+<div class="chart-container" id="chart-turn"></div>
+</div>
+<div class="chart-box">
+<div class="chart-title">等餐时长分布</div>
+<div class="chart-container" id="chart-wait"></div>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">未来7日客流预测</div>
+<div class="card-subtitle">ARIMA+LSTM融合模型，准确率86.3%</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-default">模型配置</button>
+</div>
+</div>
+<div class="chart-container" id="chart-forecast" style="height:240px"></div>
+</div>
+</div>
+
+<!-- 后厨管理-出品监控 -->
+<div class="page" id="page-kitchen-quality">
+<div class="stat-cards">
+<div class="stat-card">
+<div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">92.5%</div>
+<div class="stat-label">今日出品合格率</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>较基准 +15.2%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon red"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">3.8%</div>
+<div class="stat-label">今日退菜率</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>目标<5%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">98.2%</div>
+<div class="stat-label">餐具清洁合格率</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>目标≥98%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">42min</div>
+<div class="stat-label">平均清洁时长</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>目标≤10min</div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">今日出品评分明细</div>
+<div class="card-subtitle">AI自动评分：摆盘25+分量25+色泽25+配菜25</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-default">标准出品库</button>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>菜品</th><th>厨师</th><th>摆盘</th><th>分量</th><th>色泽</th><th>配菜</th><th>总分</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td><strong>麻辣毛肚</strong></td><td>张厨师</td><td>22</td><td>24</td><td>20</td><td>23</td><td><strong>89</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><strong>招牌烤鱼</strong></td><td>李厨师</td><td>20</td><td>22</td><td>18</td><td>21</td><td><strong>81</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><strong>宫保鸡丁</strong></td><td>王厨师</td><td>18</td><td>20</td><td>15</td><td>19</td><td><strong>72</strong></td><td><span class="tag tag-red">预警</span></td><td><button class="btn btn-primary btn-sm">复核</button></td></tr>
+<tr><td><strong>清蒸鲈鱼</strong></td><td>张厨师</td><td>24</td><td>25</td><td>23</td><td>24</td><td><strong>96</strong></td><td><span class="tag tag-green">优秀</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><strong>水煮牛肉</strong></td><td>李厨师</td><td>21</td><td>23</td><td>22</td><td>22</td><td><strong>88</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="chart-row">
+<div class="chart-box">
+<div class="chart-title">退菜归因分析</div>
+<div class="chart-container" id="chart-return"></div>
+</div>
+<div class="chart-box">
+<div class="chart-title">清洁时效监控</div>
+<div class="chart-container" id="chart-clean"></div>
+</div>
+</div>
+</div>
+
+<!-- 后厨管理-合规检测 -->
+<div class="page" id="page-kitchen-compliance">
+<div class="stat-cards">
+<div class="stat-card">
+<div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">96.8%</div>
+<div class="stat-label">着装合规率</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>目标≥95%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">97.2%</div>
+<div class="stat-label">卫生合格率</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>目标≥95%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">3</div>
+<div class="stat-label">今日违规行为</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>目标降低30%</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon red"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">0</div>
+<div class="stat-label">今日安全事件</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>7×24监控正常</div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">实时合规检测看板</div>
+<div class="card-subtitle">AI实时检测，每秒1帧分析</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-default">检测配置</button>
+</div>
+</div>
+<div class="chart-row" style="margin-bottom:0">
+<div class="chart-box" style="padding:16px">
+<div class="chart-title">着装合规</div>
+<div style="display:flex;align-items:center;gap:16px;margin-top:12px">
+<div style="width:120px;height:120px;position:relative">
+<svg viewBox="0 0 100 100" width="120" height="120">
+<circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="10"/>
+<circle cx="50" cy="50" r="40" fill="none" stroke="#1890ff" stroke-width="10" stroke-dasharray="251.2" stroke-dashoffset="7.5" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" text-anchor="middle" dy="5" font-size="20" font-weight="bold" fill="#333">96.8%</text>
+</svg>
+</div>
+<div style="flex:1">
+<div style="margin-bottom:8px"><span class="tag tag-blue">工帽</span> 98.2%</div>
+<div style="margin-bottom:8px"><span class="tag tag-blue">口罩</span> 95.5%</div>
+<div style="margin-bottom:8px"><span class="tag tag-blue">围裙</span> 97.1%</div>
+<div><span class="tag tag-blue">手套</span> 96.4%</div>
+</div>
+</div>
+</div>
+<div class="chart-box" style="padding:16px">
+<div class="chart-title">卫生环境</div>
+<div style="display:flex;align-items:center;gap:16px;margin-top:12px">
+<div style="width:120px;height:120px;position:relative">
+<svg viewBox="0 0 100 100" width="120" height="120">
+<circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="10"/>
+<circle cx="50" cy="50" r="40" fill="none" stroke="#52c41a" stroke-width="10" stroke-dasharray="251.2" stroke-dashoffset="7.0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="50" text-anchor="middle" dy="5" font-size="20" font-weight="bold" fill="#333">97.2%</text>
+</svg>
+</div>
+<div style="flex:1">
+<div style="margin-bottom:8px"><span class="tag tag-green">垃圾桶</span> 98.5%</div>
+<div style="margin-bottom:8px"><span class="tag tag-green">地面积水</span> 96.2%</div>
+<div style="margin-bottom:8px"><span class="tag tag-green">杂物乱放</span> 95.8%</div>
+<div><span class="tag tag-green">鼠患</span> 99.1%</div>
+</div>
+</div>
+</div>
+</div>
+<div class="table-wrap" style="margin-top:20px">
+<table>
+<thead><tr><th>时间</th><th>类型</th><th>检测项</th><th>人员</th><th>抓拍</th><th>级别</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td>10:15:32</td><td><span class="tag tag-red">行为违规</span></td><td>玩手机</td><td>赵小厨</td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40'%3E%3Crect width='60' height='40' fill='%23ddd'/%3E%3Ctext x='30' y='24' text-anchor='middle' font-size='10' fill='%23666'%3E抓拍图%3C/text%3E%3C/svg%3E" style="border-radius:4px"></td><td><span class="tag tag-orange">二级</span></td><td><span class="tag tag-orange">待处理</span></td><td><button class="btn btn-primary btn-sm">处理</button></td></tr>
+<tr><td>09:42:18</td><td><span class="tag tag-orange">着装违规</span></td><td>未戴口罩</td><td>钱小厨</td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40'%3E%3Crect width='60' height='40' fill='%23ddd'/%3E%3Ctext x='30' y='24' text-anchor='middle' font-size='10' fill='%23666'%3E抓拍图%3C/text%3E%3C/svg%3E" style="border-radius:4px"></td><td><span class="tag tag-orange">二级</span></td><td><span class="tag tag-green">已整改</span></td><td><button class="btn btn-default btn-sm">详情</button></td></tr>
+<tr><td>08:20:05</td><td><span class="tag tag-blue">卫生异常</span></td><td>垃圾堆积</td><td>—</td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40'%3E%3Crect width='60' height='40' fill='%23ddd'/%3E%3Ctext x='30' y='24' text-anchor='middle' font-size='10' fill='%23666'%3E抓拍图%3C/text%3E%3C/svg%3E" style="border-radius:4px"></td><td><span class="tag tag-blue">一级</span></td><td><span class="tag tag-green">已整改</span></td><td><button class="btn btn-default btn-sm">详情</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- 供应链管理-库存管理 -->
+<div class="page" id="page-supply-inventory">
+<div class="stat-cards">
+<div class="stat-card">
+<div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">¥86,420</div>
+<div class="stat-label">库存总金额</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>周转天数 12.5</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">12</div>
+<div class="stat-label">库存预警项</div>
+<div class="stat-trend down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>需立即处理</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">3</div>
+<div class="stat-label">今日采购订单</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>AI推荐</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon red"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="stat-body">
+<div class="stat-value">2</div>
+<div class="stat-label">待调拨申请</div>
+<div class="stat-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>待审批</div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">库存实时看板</div>
+<div class="card-subtitle">库存量/库存金额/周转率核心指标</div>
+</div>
+<div class="card-extra">
+<div class="filter-bar" style="margin-bottom:0">
+<select><option>全部品类</option><option>肉类</option><option>蔬菜</option><option>海鲜</option><option>调料</option></select>
+<input type="text" placeholder="搜索物料">
+<button class="btn btn-primary">导出</button>
+</div>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>物料</th><th>品类</th><th>库存量</th><th>安全库存</th><th>库存金额</th><th>周转天数</th><th>效期</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td><strong>毛肚</strong></td><td>肉类</td><td>12kg</td><td>20kg</td><td>¥1,440</td><td>8天</td><td>2026-07-15</td><td><span class="tag tag-red">库存不足</span></td><td><button class="btn btn-primary btn-sm">采购</button></td></tr>
+<tr><td><strong>牛肉卷</strong></td><td>肉类</td><td>35kg</td><td>25kg</td><td>¥3,500</td><td>12天</td><td>2026-07-20</td><td><span class="tag tag-green">正常</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><strong>金针菇</strong></td><td>蔬菜</td><td>8kg</td><td>15kg</td><td>¥160</td><td>3天</td><td>2026-07-03</td><td><span class="tag tag-red">库存不足</span></td><td><button class="btn btn-primary btn-sm">采购</button></td></tr>
+<tr><td><strong>基围虾</strong></td><td>海鲜</td><td>18kg</td><td>15kg</td><td>¥2,160</td><td>5天</td><td>2026-07-01</td><td><span class="tag tag-orange">临期</span></td><td><button class="btn btn-primary btn-sm">处理</button></td></tr>
+<tr><td><strong>牛油底料</strong></td><td>调料</td><td>50kg</td><td>30kg</td><td>¥2,500</td><td>20天</td><td>2026-08-15</td><td><span class="tag tag-green">正常</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+</tbody>
+</table>
+</div>
+<div class="pagination">
+<span class="info">共 56 条</span>
+<button>&lt;</button><button class="active">1</button><button>2</button><button>3</button><button>...</button><button>6</button><button>&gt;</button>
+</div>
+</div>
+</div>
+
+<!-- 巡检管理-闭环管理 -->
+<div class="page" id="page-inspect-loop">
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">巡检问题闭环跟踪</div>
+<div class="card-subtitle">预警→整改→复盘闭环管理</div>
+</div>
+<div class="card-extra">
+<div class="btn-group">
+<button class="btn btn-primary">全部</button>
+<button class="btn btn-default">待整改</button>
+<button class="btn btn-default">待复检</button>
+<button class="btn btn-default">已完成</button>
+</div>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>问题ID</th><th>问题类型</th><th>问题描述</th><th>责任人</th><th>发起时间</th><th>整改时限</th><th>当前进度</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td>PR-20260626-001</td><td><span class="tag tag-red">安全</span></td><td>后厨动火区域离人</td><td>王厨师</td><td>10:23:15</td><td>4小时</td><td><div class="progress-bar"><div class="progress-fill red" style="width:10%"></div></div></td><td><span class="tag tag-red">待整改</span></td><td><button class="btn btn-primary btn-sm">催办</button></td></tr>
+<tr><td>PR-20260626-002</td><td><span class="tag tag-orange">食安</span></td><td>餐具清洁不合格</td><td>赵洗碗</td><td>09:45:00</td><td>4小时</td><td><div class="progress-bar"><div class="progress-fill orange" style="width:60%"></div></div></td><td><span class="tag tag-orange">整改中</span></td><td><button class="btn btn-primary btn-sm">查看</button></td></tr>
+<tr><td>PR-20260626-003</td><td><span class="tag tag-blue">卫生</span></td><td>天台区地面清洁不到位</td><td>张小明</td><td>09:30:00</td><td>24小时</td><td><div class="progress-bar"><div class="progress-fill blue" style="width:100%"></div></div></td><td><span class="tag tag-green">待复检</span></td><td><button class="btn btn-primary btn-sm">复检</button></td></tr>
+<tr><td>PR-20260626-004</td><td><span class="tag tag-gray">一般</span></td><td>前厅绿植摆放不整齐</td><td>李小红</td><td>08:15:00</td><td>24小时</td><td><div class="progress-bar"><div class="progress-fill green" style="width:100%"></div></div></td><td><span class="tag tag-green">已完成</span></td><td><button class="btn btn-default btn-sm">详情</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">整改流程时间轴</div>
+<div class="card-subtitle">PR-20260626-002 餐具清洁不合格</div>
+</div>
+</div>
+<div style="padding:0 16px">
+<div class="timeline">
+<div class="timeline-item completed">
+<div class="timeline-time">09:45:00</div>
+<div class="timeline-content">
+<div class="timeline-title">AI实时检测发现问题</div>
+<div style="font-size:13px;color:#666">AI检测到洗碗间出口餐具清洁不合格（残渣残留），自动抓拍留证</div>
+</div>
+</div>
+<div class="timeline-item completed">
+<div class="timeline-time">09:45:03</div>
+<div class="timeline-content">
+<div class="timeline-title">推送责任人</div>
+<div style="font-size:13px;color:#666">系统自动推送告警至责任人赵洗碗APP，要求立即整改</div>
+</div>
+</div>
+<div class="timeline-item completed">
+<div class="timeline-time">10:20:15</div>
+<div class="timeline-content">
+<div class="timeline-title">责任人整改并拍照上传</div>
+<div style="font-size:13px;color:#666">赵洗碗重新清洗餐具，上传整改后照片2张</div>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-time">待处理</div>
+<div class="timeline-content">
+<div class="timeline-title">AI复检确认</div>
+<div style="font-size:13px;color:#666">等待AI识别确认整改完成...</div>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-time">归档</div>
+<div class="timeline-content">
+<div class="timeline-title">数据归档</div>
+<div style="font-size:13px;color:#666">整改通过后自动归档，纳入考核数据</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 运营管理-培训管理 -->
+<div class="page" id="page-ops-training">
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">SOP培训视频库</div>
+<div class="card-subtitle">按岗位/技能分类管理</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-primary">+ 上传视频</button>
+</div>
+</div>
+<div class="filter-bar">
+<select><option>全部岗位</option><option>服务员</option><option>厨师</option><option>洗碗工</option></select>
+<select><option>全部技能</option><option>摆盘</option><option>清洁</option><option>服务</option></select>
+<input type="text" placeholder="搜索视频">
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>视频</th><th>名称</th><th>岗位</th><th>技能</th><th>时长</th><th>学习人数</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50'%3E%3Crect width='80' height='50' fill='%23333'/%3E%3Cpolygon points='35,20 35,30 50,25' fill='%23fff'/%3E%3C/svg%3E" style="border-radius:4px"></td><td><strong>标准摆盘操作示范</strong></td><td>厨师</td><td>摆盘</td><td>12:35</td><td>18人</td><td><span class="tag tag-green">已发布</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50'%3E%3Crect width='80' height='50' fill='%23333'/%3E%3Cpolygon points='35,20 35,30 50,25' fill='%23fff'/%3E%3C/svg%3E" style="border-radius:4px"></td><td><strong>桌面清洁SOP流程</strong></td><td>服务员</td><td>清洁</td><td>08:20</td><td>25人</td><td><span class="tag tag-green">已发布</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50'%3E%3Crect width='80' height='50' fill='%23333'/%3E%3Cpolygon points='35,20 35,30 50,25' fill='%23fff'/%3E%3C/svg%3E" style="border-radius:4px"></td><td><strong>顾客服务礼仪规范</strong></td><td>服务员</td><td>服务</td><td>15:45</td><td>12人</td><td><span class="tag tag-green">已发布</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">AI实操评估</div>
+<div class="card-subtitle">动作规范/流程顺序/时间控制自动评分</div>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>员工</th><th>岗位</th><th>评估项目</th><th>动作规范</th><th>流程顺序</th><th>时间控制</th><th>总分</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td>张小明</td><td>服务员</td><td>桌面清洁</td><td>85</td><td>92</td><td>78</td><td><strong>85</strong></td><td><span class="tag tag-green">通过</span></td><td><button class="btn btn-default btn-sm">详情</button></td></tr>
+<tr><td>李小红</td><td>服务员</td><td>上菜流程</td><td>72</td><td>68</td><td>65</td><td><strong>68</strong></td><td><span class="tag tag-red">需改进</span></td><td><button class="btn btn-primary btn-sm">建议</button></td></tr>
+<tr><td>王大力</td><td>厨师</td><td>摆盘操作</td><td>95</td><td>90</td><td>88</td><td><strong>91</strong></td><td><span class="tag tag-green">优秀</span></td><td><button class="btn btn-default btn-sm">详情</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- 系统管理-权限管理 -->
+<div class="page" id="page-sys-permission">
+<div class="card">
+<div class="card-header">
+<div>
+<div class="card-title">角色管理</div>
+<div class="card-subtitle">管理员/店长/店员/督导/厨师长/采购等角色</div>
+</div>
+<div class="card-extra">
+<button class="btn btn-primary">+ 新增角色</button>
+</div>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>角色</th><th>人数</th><th>权限范围</th><th>创建时间</th><th>状态</th><th>操作</th></tr></thead>
+<tbody>
+<tr><td><strong>系统管理员</strong></td><td>2</td><td>全部模块</td><td>2026-01-01</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-default btn-sm">配置</button></td></tr>
+<tr><td><strong>店长</strong></td><td>5</td><td>前厅/后厨/供应链/巡检/运营</td><td>2026-01-01</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-default btn-sm">配置</button></td></tr>
+<tr><td><strong>店员</strong></td><td>48</td><td>前厅查看/后厨查看/个人绩效</td><td>2026-01-01</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-default btn-sm">配置</button></td></tr>
+<tr><td><strong>督导</strong></td><td>3</td><td>巡检管理/闭环管理</td><td>2026-01-01</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-default btn-sm">配置</button></td></tr>
+<tr><td><strong>厨师长</strong></td><td>5</td><td>后厨管理/出品监控</td><td>2026-01-01</td><td><span class="tag tag-green">启用</span></td><td><button class="btn btn-default btn-sm">配置</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</main>
+</div>
+</div>
+
+<!-- 消息弹窗 -->
+<div class="modal-overlay" id="msgModal">
+<div class="modal">
+<div class="modal-header">
+<h3>消息通知</h3>
+<button class="modal-close" onclick="closeModal()">
+<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</div>
+<div class="modal-body">
+<div class="list-item">
+<div class="list-icon" style="background:var(--danger)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="list-body">
+<div class="list-title">后厨动火区域离人告警</div>
+<div class="list-desc">后厨A区灶台离人超过5秒，已触发安全告警</div>
+<div class="list-meta">10:23:15</div>
+</div>
+</div>
+<div class="list-item">
+<div class="list-icon" style="background:var(--warning)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+<div class="list-body">
+<div class="list-title">出品评分预警</div>
+<div class="list-desc">菜品「宫保鸡丁」评分72分，低于80分阈值</div>
+<div class="list-meta">10:18:42</div>
+</div>
+</div>
+<div class="list-item">
+<div class="list-icon" style="background:var(--primary)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+<div class="list-body">
+<div class="list-title">库存预警</div>
+<div class="list-desc">毛肚库存低于安全阈值（剩12kg），建议采购</div>
+<div class="list-meta">09:45:00</div>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-default" onclick="closeModal()">关闭</button>
+<button class="btn btn-primary">一键已读</button>
+</div>
+</div>
+</div>
+
+<script>
+let currentRole='admin';
+let currentPage='dashboard';
+
+const menuConfig={
+admin:[
+{key:'dashboard',icon:'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',title:'首页',children:[]},
+{key:'front',icon:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',title:'前厅管理',children:[{key:'front-flow',title:'客流识别'},{key:'front-staff',title:'定人定岗'},{key:'front-service',title:'服务效率'}]},
+{key:'kitchen',icon:'M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 4h5v2h-5V6zm0 4h5v2h-5v-2zm0 4h5v2h-5v-2zM7 6h4v2H7V6zm0 4h4v2H7v-2zm0 4h4v2H7v-2z',title:'后厨管理',children:[{key:'kitchen-quality',title:'出品监控'},{key:'kitchen-compliance',title:'合规检测'}]},
+{key:'supply',icon:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z',title:'供应链管理',children:[{key:'supply-inventory',title:'库存管理'},{key:'supply-procurement',title:'采购管理'}]},
+{key:'inspect',icon:'M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z',title:'巡检管理',children:[{key:'inspect-self',title:'门店自检'},{key:'inspect-supervisor',title:'督导巡检'},{key:'inspect-loop',title:'闭环管理'}]},
+{key:'ops',icon:'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.27.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z',title:'运营管理',children:[{key:'ops-training',title:'培训管理'}]},
+{key:'sys',icon:'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.27.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z',title:'系统管理',children:[{key:'sys-permission',title:'权限管理'},{key:'sys-alert',title:'告警配置'},{key:'sys-device',title:'设备管理'}]}
+],
+manager:[
+{key:'dashboard',icon:'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',title:'首页',children:[]},
+{key:'front',icon:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',title:'前厅管理',children:[{key:'front-flow',title:'客流识别'},{key:'front-staff',title:'定人定岗'},{key:'front-service',title:'服务效率'}]},
+{key:'kitchen',icon:'M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 4h5v2h-5V6zm0 4h5v2h-5v-2zm0 4h5v2h-5v-2zM7 6h4v2H7V6zm0 4h4v2H7v-2zm0 4h4v2H7v-2z',title:'后厨管理',children:[{key:'kitchen-quality',title:'出品监控'},{key:'kitchen-compliance',title:'合规检测'}]},
+{key:'supply',icon:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z',title:'供应链管理',children:[{key:'supply-inventory',title:'库存管理'}]},
+{key:'inspect',icon:'M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z',title:'巡检管理',children:[{key:'inspect-self',title:'门店自检'},{key:'inspect-loop',title:'闭环管理'}]},
+{key:'ops',icon:'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.27.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z',title:'运营管理',children:[{key:'ops-training',title:'培训管理'}]}
+],
+staff:[
+{key:'dashboard',icon:'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',title:'首页',children:[]},
+{key:'front',icon:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',title:'前厅查看',children:[{key:'front-flow',title:'客流状态'},{key:'front-staff',title:'我的区域'}]},
+{key:'kitchen',icon:'M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 4h5v2h-5V6zm0 4h5v2h-5v-2zm0 4h5v2h-5v-2zM7 6h4v2H7V6zm0 4h4v2H7v-2zm0 4h4v2H7v-2z',title:'后厨查看',children:[{key:'kitchen-quality',title:'出品评分'},{key:'kitchen-compliance',title:'合规状态'}]}
+]
+};
+
+const roleNames={admin:'系统管理员',manager:'店长',staff:'店员'};
+const roleAvatars={admin:'管',manager:'店',staff:'员'};
+
+function selectRole(el,role){
+document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+el.classList.add('active');
+currentRole=role;
+}
+
+function login(){
+document.getElementById('loginPage').style.display='none';
+document.getElementById('app').classList.add('active');
+document.getElementById('userName').textContent=roleNames[currentRole];
+document.getElementById('userRole').textContent=currentRole==='admin'?'管理员':(currentRole==='manager'?'店长':'店员');
+document.getElementById('userAvatar').textContent=roleAvatars[currentRole];
+renderMenu();
+renderCharts();
+}
+
+function renderMenu(){
+const nav=document.getElementById('menuNav');
+const menus=menuConfig[currentRole]||menuConfig.admin;
+let html='';
+menus.forEach(m=>{
+const hasChildren=m.children&&m.children.length>0;
+html+=`<div class="menu-item ${hasChildren?'':'no-arrow'}" onclick="${hasChildren?`toggleSubmenu(this,'${m.key}')`:''}" data-key="${m.key}">
+<svg viewBox="0 0 24 24"><path d="${m.icon}"/></svg>
+<span>${m.title}</span>
+${hasChildren?'<svg class="arrow" viewBox="0 0 24 24" style="width:14px;height:14px;margin-left:auto;fill:rgba(255,255,255,0.5)"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>':''}
+</div>`;
+if(hasChildren){
+html+=`<div class="submenu" id="sub-${m.key}">`;
+m.children.forEach(c=>{
+html+=`<div class="submenu-item" data-parent="${m.key}" data-key="${c.key}" onclick="navigate('${c.key}','${m.title} > ${c.title}')">${c.title}</div>`;
+});
+html+=`</div>`;
+}else{
+html+=`<div class="submenu" id="sub-${m.key}"></div>`;
+}
+});
+nav.innerHTML=html;
+// 绑定首页点击
+nav.querySelector('[data-key="dashboard"]')?.addEventListener('click',()=>navigate('dashboard','首页'));
+}
+
+function toggleSubmenu(el,key){
+el.classList.toggle('expanded');
+const sub=document.getElementById('sub-'+key);
+if(sub)sub.classList.toggle('open');
+}
+
+function navigate(key,breadcrumb){
+currentPage=key;
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+const target=document.getElementById('page-'+key);
+if(target)target.classList.add('active');
+else document.getElementById('page-dashboard').classList.add('active');
+
+if(breadcrumb)document.getElementById('breadcrumb').textContent=breadcrumb;
+
+// 更新菜单状态
+document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+document.querySelectorAll('.submenu-item').forEach(s=>s.classList.remove('active'));
+const activeSub=document.querySelector(`.submenu-item[data-key="${key}"]`);
+if(activeSub){
+activeSub.classList.add('active');
+activeSub.closest('.submenu')?.classList.add('open');
+activeSub.closest('.submenu')?.previousElementSibling?.classList.add('expanded','active');
+}
+if(key==='dashboard'){
+const dash=document.querySelector('.menu-item[data-key="dashboard"]');
+if(dash)dash.classList.add('active');
+}
+
+renderCharts();
+}
+
+function showMessages(){document.getElementById('msgModal').classList.add('active');}
+function showAlerts(){document.getElementById('msgModal').classList.add('active');}
+function closeModal(){document.getElementById('msgModal').classList.remove('active');}
+function showUserMenu(){
+if(confirm('确定要退出登录吗？')){
+location.reload();
+}
+}
+
+// 绘制图表
+defaultColors=['#1890ff','#52c41a','#faad14','#f5222d','#722ed1','#13c2c2'];
+
+function drawLineChart(container,data,labels,color){
+const w=container.clientWidth,h=container.clientHeight;
+const pad=40,max=Math.max(...data)*1.2;
+let svg=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+// 网格
+for(let i=0;i<=4;i++){
+const y=h-pad-(i*(h-2*pad)/4);
+svg+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+svg+=`<text x="${pad-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#999">${Math.round(max*i/4)}</text>`;
+}
+// 路径
+let path='';
+data.forEach((v,i)=>{
+const x=pad+(i/(data.length-1))*(w-2*pad);
+const y=h-pad-(v/max)*(h-2*pad);
+path+=(i===0?'M':'L')+`${x},${y}`;
+});
+svg+=`<path d="${path}" fill="none" stroke="${color}" stroke-width="2"/>`;
+// 数据点
+const lastX=pad+((data.length-1)/(data.length-1))*(w-2*pad);
+const lastY=h-pad-(data[data.length-1]/max)*(h-2*pad);
+svg+=`<circle cx="${lastX}" cy="${lastY}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>`;
+// 标签
+labels.forEach((l,i)=>{
+const x=pad+(i/(labels.length-1))*(w-2*pad);
+svg+=`<text x="${x}" y="${h-12}" text-anchor="middle" font-size="11" fill="#999">${l}</text>`;
+});
+svg+=`</svg>`;
+container.innerHTML=svg;
+}
+
+function drawBarChart(container,data,labels,color){
+const w=container.clientWidth,h=container.clientHeight;
+const pad=40,max=Math.max(...data)*1.2;
+const barW=(w-2*pad)/data.length*0.6;
+let svg=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+for(let i=0;i<=4;i++){
+const y=h-pad-(i*(h-2*pad)/4);
+svg+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+}
+data.forEach((v,i)=>{
+const x=pad+(i+0.2)*(w-2*pad)/data.length;
+const bh=(v/max)*(h-2*pad);
+const y=h-pad-bh;
+svg+=`<rect x="${x}" y="${y}" width="${barW}" height="${bh}" fill="${color}" rx="3"/>`;
+svg+=`<text x="${x+barW/2}" y="${y-6}" text-anchor="middle" font-size="11" fill="#666">${v}</text>`;
+svg+=`<text x="${x+barW/2}" y="${h-12}" text-anchor="middle" font-size="11" fill="#999">${labels[i]}</text>`;
+});
+svg+=`</svg>`;
+container.innerHTML=svg;
+}
+
+function drawAreaChart(container,data,labels){
+const w=container.clientWidth,h=container.clientHeight;
+const pad=40,max=Math.max(...data)*1.2;
+let svg=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+for(let i=0;i<=4;i++){
+const y=h-pad-(i*(h-2*pad)/4);
+svg+=`<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+}
+let path='';
+data.forEach((v,i)=>{
+const x=pad+(i/(data.length-1))*(w-2*pad);
+const y=h-pad-(v/max)*(h-2*pad);
+path+=(i===0?'M':'L')+`${x},${y}`;
+});
+let areaPath=path+` L${w-pad},${h-pad} L${pad},${h-pad} Z`;
+svg+=`<path d="${areaPath}" fill="rgba(24,144,255,0.1)" stroke="none"/>`;
+svg+=`<path d="${path}" fill="none" stroke="#1890ff" stroke-width="2"/>`;
+labels.forEach((l,i)=>{
+const x=pad+(i/(labels.length-1))*(w-2*pad);
+svg+=`<text x="${x}" y="${h-12}" text-anchor="middle" font-size="11" fill="#999">${l}</text>`;
+});
+svg+=`</svg>`;
+container.innerHTML=svg;
+}
+
+function drawPieChart(container,data,labels,colors){
+const w=container.clientWidth,h=container.clientHeight;
+const r=Math.min(w,h)/2-30,cx=w/2,cy=h/2;
+let start=0,total=data.reduce((a,b)=>a+b,0);
+let svg=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+const legendX=w/2+80;
+const legendY=20;
+data.forEach((v,i)=>{
+const angle=(v/total)*Math.PI*2;
+const x1=cx+r*Math.cos(start);
+const y1=cy+r*Math.sin(start);
+const x2=cx+r*Math.cos(start+angle);
+const y2=cy+r*Math.sin(start+angle);
+const large=angle>Math.PI?1:0;
+const path=`M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z`;
+svg+=`<path d="${path}" fill="${colors[i%colors.length]}" stroke="#fff" stroke-width="2"/>`;
+// 百分比标签
+const mid=start+angle/2;
+const lx=cx+(r*0.7)*Math.cos(mid);
+const ly=cy+(r*0.7)*Math.sin(mid);
+const pct=Math.round(v/total*100)+'%';
+svg+=`<text x="${lx}" y="${ly}" text-anchor="middle" dy="4" font-size="12" font-weight="bold" fill="#fff">${pct}</text>`;
+// legend
+svg+=`<rect x="${legendX}" y="${legendY+i*22}" width="12" height="12" fill="${colors[i%colors.length]}" rx="2"/>`;
+svg+=`<text x="${legendX+18}" y="${legendY+i*22+10}" font-size="12" fill="#666">${labels[i]}</text>`;
+start+=angle;
+});
+svg+=`</svg>`;
+container.innerHTML=svg;
+}
+
+function renderCharts(){
+setTimeout(()=>{
+const flow=document.getElementById('chart-flow');
+if(flow)drawLineChart(flow,[120,180,250,320,280,350,420,380,320,280,200,150],['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],'#1890ff');
+const zone=document.getElementById('chart-zone');
+if(zone)drawPieChart(zone,[65,35],['室内区','天台区'],['#1890ff','#52c41a']);
+const flow2=document.getElementById('chart-flow2');
+if(flow2)drawAreaChart(flow2,[60,75,82,78,88,92,85,80,72,68,65,62],['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00']);
+const turn=document.getElementById('chart-turn');
+if(turn)drawLineChart(turn,[48,52,45,50,42,38,55,60,45,48],['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],'#52c41a');
+const wait=document.getElementById('chart-wait');
+if(wait)drawBarChart(wait,[15,22,18,25,20,12],['P50','P80','P95','平均','最高','最低'],'#faad14');
+const forecast=document.getElementById('chart-forecast');
+if(forecast)drawAreaChart(forecast,[320,350,380,420,450,480,520],['6/27','6/28','6/29','6/30','7/01','7/02','7/03']);
+const ret=document.getElementById('chart-return');
+if(ret)drawPieChart(ret,[35,28,20,12,5],['出品质量','上菜超时','口味不符','异物','其他'],['#f5222d','#faad14','#1890ff','#52c41a','#722ed1']);
+const clean=document.getElementById('chart-clean');
+if(clean)drawBarChart(clean,[8,12,6,15,10,4,3,2,1],['0-5min','5-10min','10-15min','15-20min','20-30min','30-45min','45-60min','60-90min','>90min'],'#52c41a');
+},100);
+}
+
+// 生成座位
+function generateSeats(id,total,occupied,cleaning){
+const el=document.getElementById(id);
+if(!el)return;
+let html='';
+for(let i=1;i<=total;i++){
+let cls='free';
+if(i<=occupied)cls='occupied';
+else if(i<=occupied+cleaning)cls='cleaning';
+html+=`<div class="seat ${cls}">${i}</div>`;
+}
+el.innerHTML=html;
+}
+
+setTimeout(()=>{
+generateSeats('seats-outdoor',30,22,4);
+generateSeats('seats-indoor',40,26,3);
+renderCharts();
+},200);
+
+window.addEventListener('resize',renderCharts);
+</script>
+</body>
+</html>
