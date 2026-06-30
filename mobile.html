@@ -1503,6 +1503,7 @@ function switchFrontTab(idx) {
   document.querySelectorAll('.front-extra-content').forEach(child => {
     child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
   });
+  document.getElementById('pages').scrollTop = 0;
   showToastM('切换至' + ['客流状态', '翻台监测', '等餐分析', '在岗监控'][idx], 'info');
   if (idx === 1) {
     setTimeout(() => drawBarM('chart-turn-m', [48, 52, 45, 50, 42, 38, 55, 60, 45, 48], ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'], '#52c41a'), 100);
@@ -1525,6 +1526,7 @@ function switchKitchenTab(idx) {
   document.querySelectorAll('.kitchen-extra-content').forEach(child => {
     child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
   });
+  document.getElementById('pages').scrollTop = 0;
   showToastM('切换至' + ['出餐监控', '合规检测', '安全监控'][idx], 'info');
   if (idx === 1) {
     setTimeout(() => drawPieM('chart-compliance-m', [85, 10, 5], ['合格', '警告', '不合格'], ['#52c41a', '#faad14', '#f5222d']), 100);
@@ -1544,6 +1546,7 @@ function switchInventoryTab(idx) {
   document.querySelectorAll('.inventory-extra-content').forEach(child => {
     child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
   });
+  document.getElementById('pages').scrollTop = 0;
   showToastM('切换至' + ['库存概览', '采购建议', '效期预警'][idx], 'info');
   if (idx === 1) {
     setTimeout(() => drawBarM('chart-purchase-m', [12, 18, 15, 22, 20, 25, 28], ['7.20', '7.21', '7.22', '7.23', '7.24', '7.25', '7.26'], '#1890ff'), 100);
