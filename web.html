@@ -638,11 +638,11 @@ tr:hover td{background:#f6ffed}
 <table>
 <thead><tr><th>菜品</th><th>厨师</th><th>摆盘</th><th>分量</th><th>色泽</th><th>配菜</th><th>总分</th><th>状态</th><th>操作</th></tr></thead>
 <tbody>
-<tr><td><strong>麻辣毛肚</strong></td><td>张厨师</td><td>22</td><td>24</td><td>20</td><td>23</td><td><strong>89</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
-<tr><td><strong>招牌烤鱼</strong></td><td>李厨师</td><td>20</td><td>22</td><td>18</td><td>21</td><td><strong>81</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
-<tr><td><strong>宫保鸡丁</strong></td><td>王厨师</td><td>18</td><td>20</td><td>15</td><td>19</td><td><strong>72</strong></td><td><span class="tag tag-red">预警</span></td><td><button class="btn btn-primary btn-sm" onclick="showDishDetail('宫保鸡丁','王厨师',72)">复核</button></td></tr>
-<tr><td><strong>清蒸鲈鱼</strong></td><td>张厨师</td><td>24</td><td>25</td><td>23</td><td>24</td><td><strong>96</strong></td><td><span class="tag tag-green">优秀</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
-<tr><td><strong>水煮牛肉</strong></td><td>李厨师</td><td>21</td><td>23</td><td>22</td><td>22</td><td><strong>88</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm">查看</button></td></tr>
+<tr><td><strong>麻辣毛肚</strong></td><td>张厨师</td><td>22</td><td>24</td><td>20</td><td>23</td><td><strong>89</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm" onclick="showDishView('麻辣毛肚','张厨师',89,22,24,20,23)">查看</button></td></tr>
+<tr><td><strong>招牌烤鱼</strong></td><td>李厨师</td><td>20</td><td>22</td><td>18</td><td>21</td><td><strong>81</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm" onclick="showDishView('招牌烤鱼','李厨师',81,20,22,18,21)">查看</button></td></tr>
+<tr><td><strong>宫保鸡丁</strong></td><td>王厨师</td><td>18</td><td>20</td><td>15</td><td>19</td><td><strong>72</strong></td><td><span class="tag tag-red">预警</span></td><td><button class="btn btn-primary btn-sm" onclick="showDishReview('宫保鸡丁','王厨师',72,18,20,15,19)">复核</button></td></tr>
+<tr><td><strong>清蒸鲈鱼</strong></td><td>张厨师</td><td>24</td><td>25</td><td>23</td><td>24</td><td><strong>96</strong></td><td><span class="tag tag-green">优秀</span></td><td><button class="btn btn-default btn-sm" onclick="showDishView('清蒸鲈鱼','张厨师',96,24,25,23,24)">查看</button></td></tr>
+<tr><td><strong>水煮牛肉</strong></td><td>李厨师</td><td>21</td><td>23</td><td>22</td><td>22</td><td><strong>88</strong></td><td><span class="tag tag-green">合格</span></td><td><button class="btn btn-default btn-sm" onclick="showDishView('水煮牛肉','李厨师',88,21,23,22,22)">查看</button></td></tr>
 </tbody>
 </table>
 </div>
@@ -1350,13 +1350,63 @@ function showSeatDetail(seatNum,status,zone){
     content.innerHTML='<div class="detail-grid"><div class="detail-item"><div class="label">座位号</div><div class="value">'+seatNum+'</div></div><div class="detail-item"><div class="label">区域</div><div class="value">'+zone+'</div></div><div class="detail-item"><div class="label">状态</div><div class="value" style="color:'+(statusColor[status]||'#333')+'">'+statusMap[status]+'</div></div><div class="detail-item"><div class="label">顾客人数</div><div class="value">'+customerCount+'</div></div></div><div class="detail-grid"><div class="detail-item"><div class="label">已用餐时长</div><div class="value">'+waitTime+'</div></div><div class="detail-item"><div class="label">订单金额</div><div class="value">'+amount+'</div></div><div class="detail-item"><div class="label">服务员</div><div class="value">张小明</div></div><div class="detail-item"><div class="label">AI置信度</div><div class="value">96.8%</div></div></div><div class="detail-img" style="min-height:160px"><svg viewBox="0 0 320 180" style="width:100%;height:100%"><rect width="320" height="180" fill="#f5f5f5"/><rect x="60" y="40" width="200" height="100" rx="8" fill="#e8e8e8" stroke="#ccc" stroke-width="1"/><circle cx="120" cy="90" r="15" fill="#ddd"/><circle cx="200" cy="90" r="15" fill="#ddd"/><text x="160" y="160" text-anchor="middle" font-size="12" fill="#999">AI实时识别画面 - 座位'+seatNum+'</text></svg></div>';
     modal.classList.add('active');
 }
-function showDishDetail(dishName,chef,score){
+function getDishSVG(dishName,isStandard){
+    const op=isStandard?0.9:0.7;
+    const colors={
+        '宫保鸡丁':{plate:'#fff',bg:'#fff8f0',main:'#e8c880',accent:'#d32f2f',extra:'#c17f40'},
+        '麻辣毛肚':{plate:'#3e2723',bg:'#b71c1c',main:'#5d4037',accent:'#d32f2f',extra:'#795548'},
+        '清蒸鲈鱼':{plate:'#fff',bg:'#f5f5f5',main:'#9e9e9e',accent:'#4caf50',extra:'#fbc02d'},
+        '招牌烤鱼':{plate:'#3e2723',bg:'#b71c1c',main:'#8d6e63',accent:'#ffcc80',extra:'#d32f2f'},
+        '水煮牛肉':{plate:'#3e2723',bg:'#b71c1c',main:'#795548',accent:'#d32f2f',extra:'#c8e6c9'}
+    };
+    const c=colors[dishName]||colors['宫保鸡丁'];
+    return '<svg viewBox="0 0 200 140" style="width:100%;height:100%;background:#fafafa;border-radius:4px">'
+    +'<circle cx="100" cy="70" r="60" fill="'+c.plate+'" stroke="#ddd"/>'
+    +'<ellipse cx="100" cy="70" rx="50" ry="40" fill="'+c.bg+'" opacity="0.3"/>'
+    +'<rect x="70" y="50" width="20" height="15" fill="'+c.main+'" rx="3" opacity="'+op+'"/>'
+    +'<rect x="95" y="60" width="20" height="15" fill="'+c.main+'" rx="3" opacity="'+op+'"/>'
+    +'<rect x="120" y="55" width="20" height="15" fill="'+c.main+'" rx="3" opacity="'+op+'"/>'
+    +'<rect x="80" y="75" width="20" height="15" fill="'+c.main+'" rx="3" opacity="'+op+'"/>'
+    +'<rect x="105" y="80" width="20" height="15" fill="'+c.main+'" rx="3" opacity="'+op+'"/>'
+    +'<polygon points="60,55 70,60 60,65" fill="'+c.accent+'" opacity="'+op+'"/>'
+    +'<polygon points="130,50 140,55 130,60" fill="'+c.accent+'" opacity="'+op+'"/>'
+    +'<polygon points="85,85 95,90 85,95" fill="'+c.accent+'" opacity="'+op+'"/>'
+    +'<circle cx="75" cy="65" r="5" fill="'+c.extra+'" opacity="'+op+'"/>'
+    +'<circle cx="110" cy="70" r="5" fill="'+c.extra+'" opacity="'+op+'"/>'
+    +'<circle cx="95" cy="85" r="5" fill="'+c.extra+'" opacity="'+op+'"/>'
+    +'<text x="100" y="130" text-anchor="middle" font-size="11" fill="#999">'+(isStandard?'标准参考图':'AI识别图')+'</text>'
+    +'</svg>';
+}
+
+function showDishReview(dishName,chef,score,s1,s2,s3,s4){
     const modal=document.getElementById('dishDetailModal');
     const content=document.getElementById('dishDetailContent');
-    const s1=Math.floor(Math.random()*10+15), s2=Math.floor(Math.random()*10+15), s3=Math.floor(Math.random()*10+15), s4=Math.floor(Math.random()*10+15);
+    const footer=modal.querySelector('.modal-footer');
     const color=score>=80?'var(--success)':'var(--danger)';
     const status=score>=80?'合格':'预警';
-    content.innerHTML='<div class="detail-grid"><div class="detail-item"><div class="label">菜品</div><div class="value">'+dishName+'</div></div><div class="detail-item"><div class="label">厨师</div><div class="value">'+chef+'</div></div><div class="detail-item"><div class="label">总分</div><div class="value" style="color:'+color+'">'+score+'</div></div><div class="detail-item"><div class="label">状态</div><div class="value" style="color:'+color+'">'+status+'</div></div></div><div class="compare-row"><div class="compare-col"><div class="img-label">标准出品</div><div class="img-box" style="height:140px"><svg viewBox="0 0 200 140"><rect width="200" height="140" fill="#f8f8f8"/><circle cx="100" cy="70" r="40" fill="#e0e0e0"/><rect x="60" y="50" width="80" height="40" rx="4" fill="#d0d0d0"/><text x="100" y="125" text-anchor="middle" font-size="11" fill="#999">标准参考图</text></svg></div></div><div class="compare-col"><div class="img-label">实际出品</div><div class="img-box" style="height:140px"><svg viewBox="0 0 200 140"><rect width="200" height="140" fill="#f8f8f8"/><circle cx="100" cy="70" r="40" fill="#d5d5d5"/><rect x="60" y="50" width="80" height="40" rx="4" fill="#c8c8c8" transform="rotate(5 100 70)"/><text x="100" y="125" text-anchor="middle" font-size="11" fill="#999">AI识别图</text></svg></div></div></div><div class="detail-grid" style="margin-top:12px"><div class="detail-item"><div class="label">摆盘</div><div class="value">'+s1+'</div></div><div class="detail-item"><div class="label">分量</div><div class="value">'+s2+'</div></div><div class="detail-item"><div class="label">色泽</div><div class="value">'+s3+'</div></div><div class="detail-item"><div class="label">配菜</div><div class="value">'+s4+'</div></div></div><div style="margin-top:12px"><label style="font-size:13px;color:#666;display:block;margin-bottom:6px">复核意见</label><textarea style="width:100%;padding:10px;border:1px solid #eee;border-radius:4px;min-height:60px;resize:vertical">经复核，菜品摆盘及分量均达标，色泽评分偏低因环境灯光影响，建议调整出餐口照明。</textarea></div>';
+    const stdSVG=getDishSVG(dishName,true);
+    const actSVG=getDishSVG(dishName,false);
+    content.innerHTML='<div class="detail-grid"><div class="detail-item"><div class="label">菜品</div><div class="value">'+dishName+'</div></div><div class="detail-item"><div class="label">厨师</div><div class="value">'+chef+'</div></div><div class="detail-item"><div class="label">总分</div><div class="value" style="color:'+color+'">'+score+'</div></div><div class="detail-item"><div class="label">状态</div><div class="value" style="color:'+color+'">'+status+'</div></div></div>'
+    +'<div class="compare-row"><div class="compare-col"><div class="img-label">标准出品</div><div class="img-box" style="height:160px">'+stdSVG+'</div></div><div class="compare-col"><div class="img-label">实际出品</div><div class="img-box" style="height:160px">'+actSVG+'</div></div></div>'
+    +'<div class="detail-grid" style="margin-top:12px"><div class="detail-item"><div class="label">摆盘</div><div class="value">'+s1+'</div></div><div class="detail-item"><div class="label">分量</div><div class="value">'+s2+'</div></div><div class="detail-item"><div class="label">色泽</div><div class="value">'+s3+'</div></div><div class="detail-item"><div class="label">配菜</div><div class="value">'+s4+'</div></div></div>'
+    +'<div style="margin-top:12px"><label style="font-size:13px;color:#666;display:block;margin-bottom:6px">复核意见</label><textarea style="width:100%;padding:10px;border:1px solid #eee;border-radius:4px;min-height:60px;resize:vertical">经复核，菜品摆盘及分量均达标，色泽评分偏低因环境灯光影响，建议调整出餐口照明。</textarea></div>';
+    footer.innerHTML='<button class="btn btn-default" onclick="closeModal('dishDetailModal')">关闭</button><button class="btn btn-primary" onclick="showToast('复核意见已提交','success');closeModal('dishDetailModal')">提交复核</button>';
+    modal.classList.add('active');
+}
+
+function showDishView(dishName,chef,score,s1,s2,s3,s4){
+    const modal=document.getElementById('dishDetailModal');
+    const content=document.getElementById('dishDetailContent');
+    const footer=modal.querySelector('.modal-footer');
+    const color=score>=80?'var(--success)':'var(--danger)';
+    const status=score>=90?'优秀':(score>=80?'合格':'预警');
+    const stdSVG=getDishSVG(dishName,true);
+    const actSVG=getDishSVG(dishName,false);
+    content.innerHTML='<div class="detail-grid"><div class="detail-item"><div class="label">菜品</div><div class="value">'+dishName+'</div></div><div class="detail-item"><div class="label">厨师</div><div class="value">'+chef+'</div></div><div class="detail-item"><div class="label">总分</div><div class="value" style="color:'+color+'">'+score+'</div></div><div class="detail-item"><div class="label">状态</div><div class="value" style="color:'+color+'">'+status+'</div></div></div>'
+    +'<div class="compare-row"><div class="compare-col"><div class="img-label">标准出品</div><div class="img-box" style="height:160px">'+stdSVG+'</div></div><div class="compare-col"><div class="img-label">实际出品</div><div class="img-box" style="height:160px">'+actSVG+'</div></div></div>'
+    +'<div class="detail-grid" style="margin-top:12px"><div class="detail-item"><div class="label">摆盘</div><div class="value">'+s1+'</div></div><div class="detail-item"><div class="label">分量</div><div class="value">'+s2+'</div></div><div class="detail-item"><div class="label">色泽</div><div class="value">'+s3+'</div></div><div class="detail-item"><div class="label">配菜</div><div class="value">'+s4+'</div></div></div>'
+    +'<div style="margin-top:12px;padding:10px;background:#f6ffed;border-radius:4px;border-left:3px solid var(--success)"><div style="font-size:13px;color:#666"><strong>AI评分分析：</strong>该菜品在摆盘、分量、配菜维度均表现良好，'+(score>=90?'整体出品优秀，可作为标杆出品案例。':(score>=80?'整体出品达标，建议继续保持。':'色泽评分偏低，建议关注出餐灯光环境及摆盘规范性。'))+'</div></div>';
+    footer.innerHTML='<button class="btn btn-default" onclick="closeModal('dishDetailModal')">关闭</button>';
     modal.classList.add('active');
 }
 function showStaffEdit(name){
