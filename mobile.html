@@ -1503,6 +1503,13 @@ function switchFrontTab(idx) {
   document.querySelectorAll('.front-extra-content').forEach(child => {
     child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
   });
+  if (idx === 0) {
+    page.style.minHeight = '100%';
+    page.style.paddingBottom = '80px';
+  } else {
+    page.style.minHeight = 'auto';
+    page.style.paddingBottom = '0px';
+  }
   document.getElementById('pages').scrollTop = 0;
   showToastM('切换至' + ['客流状态', '翻台监测', '等餐分析', '在岗监控'][idx], 'info');
   if (idx === 1) {
@@ -1526,6 +1533,13 @@ function switchKitchenTab(idx) {
   document.querySelectorAll('.kitchen-extra-content').forEach(child => {
     child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
   });
+  if (idx === 0) {
+    page.style.minHeight = '100%';
+    page.style.paddingBottom = '80px';
+  } else {
+    page.style.minHeight = 'auto';
+    page.style.paddingBottom = '0px';
+  }
   document.getElementById('pages').scrollTop = 0;
   showToastM('切换至' + ['出餐监控', '合规检测', '安全监控'][idx], 'info');
   if (idx === 1) {
@@ -1546,6 +1560,13 @@ function switchInventoryTab(idx) {
   document.querySelectorAll('.inventory-extra-content').forEach(child => {
     child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
   });
+  if (idx === 0) {
+    page.style.minHeight = '100%';
+    page.style.paddingBottom = '80px';
+  } else {
+    page.style.minHeight = 'auto';
+    page.style.paddingBottom = '0px';
+  }
   document.getElementById('pages').scrollTop = 0;
   showToastM('切换至' + ['库存概览', '采购建议', '效期预警'][idx], 'info');
   if (idx === 1) {
