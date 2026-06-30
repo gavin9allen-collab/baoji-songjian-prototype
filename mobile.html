@@ -1412,9 +1412,15 @@ hideLoadingM();
 }
 
 function showPage(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id==='home'?'page-home':id).classList.add('active');
-document.querySelector('.pages').scrollTop=0;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id==='home'?'page-home':id).classList.add('active');
+  document.querySelector('.pages').scrollTop=0;
+  // 重置所有 extra-content 为隐藏，防止跨页面叠加
+  document.querySelectorAll('.front-extra-content, .kitchen-extra-content, .inventory-extra-content').forEach(el=>el.style.display='none');
+  // 重置当前页面的标签到默认状态
+  if(id==='front') switchFrontTab(0);
+  if(id==='kitchen') switchKitchenTab(0);
+  if(id==='inventory') switchInventoryTab(0);
 }
 
 function showTabBar(){
