@@ -373,11 +373,11 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 <div class="title">前厅管理</div>
 <div class="right"></div>
 </div>
-<div class="filter-tabs" id="front-tabs">
-<div class="filter-tab active" onclick="switchFrontTab(0)">客流状态</div>
-<div class="filter-tab" onclick="switchFrontTab(1)">翻台监测</div>
-<div class="filter-tab" onclick="switchFrontTab(2)">等餐分析</div>
-<div class="filter-tab" onclick="switchFrontTab(3)">在岗监控</div>
+<div class="filter-tabs">
+<div class="filter-tab active">客流状态</div>
+<div class="filter-tab">翻台监测</div>
+<div class="filter-tab">等餐分析</div>
+<div class="filter-tab">在岗监控</div>
 </div>
 <div class="cam-preview">
 <span class="cam-label">天台区 - 实时监控</span>
@@ -447,172 +447,6 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 <div class="chart-card">
 <div class="chart-title">等餐时长趋势</div>
 <div class="chart-area" id="chart-wait-m"></div>
-  </div>
-</div>
-
-<!-- 翻台监测 -->
-<div class="front-extra-content" data-tab="1" style="display:none">
-<div class="stat-grid" style="padding:16px">
-<div class="stat-card-m">
-<div class="label">今日翻台率</div>
-<div class="value" style="color:var(--success)">86.4%</div>
-<div class="trend up">+8.2%</div>
-</div>
-<div class="stat-card-m">
-<div class="label">平均翻台时长</div>
-<div class="value" style="color:var(--primary)">42min</div>
-<div class="trend down">目标≤45min</div>
-</div>
-</div>
-<div class="section-title">翻台时长趋势</div>
-<div class="chart-card">
-<div class="chart-title">今日翻台时长变化（小时）</div>
-<div class="chart-area" id="chart-turn-m"></div>
-</div>
-<div class="section-title">各桌翻台详情</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">1号桌 · 翻台完成</div>
-<div class="item-desc">翻台时长 38min · 清洁用时 6min</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">✓</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">5号桌 · 清洁超时</div>
-<div class="item-desc">翻台时长 52min · 清洁用时 12min</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--warning)">12min</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">8号桌 · 翻台异常</div>
-<div class="item-desc">翻台时长 68min · 待指派清洁</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--danger)">超时</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- 等餐分析 -->
-<div class="front-extra-content" data-tab="2" style="display:none">
-<div class="stat-grid" style="padding:16px">
-<div class="stat-card-m">
-<div class="label">平均等餐</div>
-<div class="value" style="color:var(--warning)">18.2min</div>
-<div class="trend down">-3.5min</div>
-</div>
-<div class="stat-card-m">
-<div class="label">等餐超时率</div>
-<div class="value" style="color:var(--danger)">8.5%</div>
-<div class="trend down">目标&lt;10%</div>
-</div>
-</div>
-<div class="section-title">等餐时长分布</div>
-<div class="chart-card">
-<div class="chart-title">等餐时长分布（分钟）</div>
-<div class="chart-area" id="chart-wait-dist-m"></div>
-</div>
-<div class="section-title">等餐超时预警</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">15号桌 · 等餐超时</div>
-<div class="item-desc">已等餐 32min · 顾客 4人 · 已催促</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--danger)">32min</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">7号桌 · 等餐偏长</div>
-<div class="item-desc">已等餐 25min · 顾客 3人</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--warning)">25min</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- 在岗监控 -->
-<div class="front-extra-content" data-tab="3" style="display:none">
-<div class="section-title">员工在岗状态</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">张小明 · 服务员</div>
-<div class="item-desc">责任区: 天台区A01-A10 · 在岗</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">在岗</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">李小红 · 服务员</div>
-<div class="item-desc">责任区: 天台区B06-B15 · 在岗</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">在岗</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">王大力 · 领班</div>
-<div class="item-desc">责任区: 室内区C01-C20 · 离岗6min</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--warning)">离岗</div>
-</div>
-</div>
-</div>
-<div class="section-title">区域监控画面</div>
-<div class="cam-preview" style="height:160px;margin:16px;width:calc(100% - 32px)">
-<span class="cam-label">天台区 - 实时在岗监控</span>
-<div class="cam-status"><div class="live-dot"></div>LIVE</div>
-<svg viewBox="0 0 320 180" style="width:100%;height:100%">
-<rect width="320" height="180" fill="#1a1a1a"/>
-<rect x="40" y="40" width="80" height="60" fill="#333" rx="4"/>
-<rect x="140" y="40" width="80" height="60" fill="#333" rx="4"/>
-<rect x="240" y="40" width="60" height="60" fill="#333" rx="4"/>
-<circle cx="80" cy="70" r="12" fill="#444"/>
-<circle cx="180" cy="70" r="12" fill="#444"/>
-<circle cx="270" cy="70" r="10" fill="#444"/>
-<text x="160" y="140" text-anchor="middle" fill="#fff" font-size="12" opacity="0.7">AI在岗检测 - 天台区</text>
-</svg>
 </div>
 </div>
 
@@ -625,10 +459,10 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 <div class="title">后厨管理</div>
 <div class="right"></div>
 </div>
-<div class="filter-tabs" id="kitchen-tabs">
-<div class="filter-tab active" onclick="switchKitchenTab(0)">出品评分</div>
-<div class="filter-tab" onclick="switchKitchenTab(1)">合规检测</div>
-<div class="filter-tab" onclick="switchKitchenTab(2)">安全监控</div>
+<div class="filter-tabs">
+<div class="filter-tab active">出品评分</div>
+<div class="filter-tab">合规检测</div>
+<div class="filter-tab">安全监控</div>
 </div>
 <div class="cam-preview">
 <span class="cam-label">后厨出品区 - 实时监控</span>
@@ -702,109 +536,6 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 </div>
 </div>
 
-<!-- 合规检测 -->
-<div class="kitchen-extra-content" data-tab="1" style="display:none">
-<div class="section-title">合规检测详情</div>
-<div class="chart-card">
-<div style="display:flex;justify-content:space-around;padding:10px 0">
-<div style="text-align:center">
-<div style="width:100px;height:100px;position:relative;margin:0 auto 8px">
-<svg viewBox="0 0 100 100" width="100" height="100">
-<circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="8"/>
-<circle cx="50" cy="50" r="40" fill="none" stroke="#1890ff" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="7.5" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-<text x="50" y="50" text-anchor="middle" dy="5" font-size="16" font-weight="bold" fill="#333">96.8%</text>
-</svg>
-</div>
-<div style="font-size:12px;color:#666">着装合规</div>
-</div>
-<div style="text-align:center">
-<div style="width:100px;height:100px;position:relative;margin:0 auto 8px">
-<svg viewBox="0 0 100 100" width="100" height="100">
-<circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="8"/>
-<circle cx="50" cy="50" r="40" fill="none" stroke="#52c41a" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="7.0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-<text x="50" y="50" text-anchor="middle" dy="5" font-size="16" font-weight="bold" fill="#333">97.2%</text>
-</svg>
-</div>
-<div style="font-size:12px;color:#666">卫生环境</div>
-</div>
-</div>
-</div>
-<div class="section-title">分项检测</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-body">
-<div class="item-title">工帽佩戴</div>
-<div class="item-desc">合格率 98.2% · 今日检测 156次</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">98.2%</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-body">
-<div class="item-title">口罩佩戴</div>
-<div class="item-desc">合格率 95.5% · 今日检测 156次</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">95.5%</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-body">
-<div class="item-title">地面积水</div>
-<div class="item-desc">合格率 96.2% · 今日检测 48次</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">96.2%</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- 安全监控 -->
-<div class="kitchen-extra-content" data-tab="2" style="display:none">
-<div class="section-title">实时监控画面</div>
-<div class="cam-preview" style="height:160px;margin:16px;width:calc(100% - 32px)">
-<span class="cam-label">后厨灶台区 - 安全监控</span>
-<div class="cam-status"><div class="live-dot"></div>LIVE</div>
-<svg viewBox="0 0 320 180" style="width:100%;height:100%">
-<rect width="320" height="180" fill="#1a1a1a"/>
-<rect x="60" y="40" width="200" height="100" fill="#333" rx="8"/>
-<circle cx="120" cy="90" r="20" fill="#444"/>
-<circle cx="200" cy="90" r="20" fill="#444"/>
-<rect x="100" y="130" width="120" height="8" fill="#f5222d" rx="4" opacity="0.6"/>
-<text x="160" y="170" text-anchor="middle" fill="#fff" font-size="11" opacity="0.7">AI安全检测 - 灶台区</text>
-</svg>
-</div>
-<div class="section-title">安全事件</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">动火离人 · 已处理</div>
-<div class="item-desc">A区灶台离人5秒 · 10:23 · 已自动熄火</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--danger);font-size:12px">紧急</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">玩手机 · 已整改</div>
-<div class="item-desc">赵小厨 · 09:42 · 已口头警告</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--warning);font-size:12px">警告</div>
-</div>
-</div>
-</div>
-</div>
-
 <!-- ===== 库存 ===== -->
 <div class="page" id="page-inventory">
 <div class="nav-header">
@@ -814,10 +545,10 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 <div class="title">库存管理</div>
 <div class="right"></div>
 </div>
-<div class="filter-tabs" id="inventory-tabs">
-<div class="filter-tab active" onclick="switchInventoryTab(0)">库存查询</div>
-<div class="filter-tab" onclick="switchInventoryTab(1)">采购建议</div>
-<div class="filter-tab" onclick="switchInventoryTab(2)">效期预警</div>
+<div class="filter-tabs">
+<div class="filter-tab active">库存查询</div>
+<div class="filter-tab">采购建议</div>
+<div class="filter-tab">效期预警</div>
 </div>
 <div class="stat-grid" style="padding-top:16px">
 <div class="stat-card-m">
@@ -885,105 +616,6 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 </div>
 </div>
 <button class="btn-m btn-m-primary" style="margin-top:16px">一键确认采购</button>
-  </div>
-</div>
-
-<!-- 采购建议 -->
-<div class="inventory-extra-content" data-tab="1" style="display:none">
-<div class="section-title">AI采购推荐</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">毛肚 · 库存不足</div>
-<div class="item-desc">当前12kg | 建议采购30kg | 预计3日用完</div>
-</div>
-<div class="item-right">
-<button class="btn-m btn-m-primary btn-sm" style="padding:6px 12px;font-size:12px" onclick="showToastM('已添加采购单','success')">采购</button>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">金针菇 · 库存偏低</div>
-<div class="item-desc">当前8kg | 建议采购20kg | 预计2日用完</div>
-</div>
-<div class="item-right">
-<button class="btn-m btn-m-primary btn-sm" style="padding:6px 12px;font-size:12px" onclick="showToastM('已添加采购单','success')">采购</button>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#1890ff,#36cfc9)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">牛肉卷 · 库存正常</div>
-<div class="item-desc">当前35kg | 建议补货15kg | 预计7日用完</div>
-</div>
-<div class="item-right">
-<button class="btn-m btn-m-default btn-sm" style="padding:6px 12px;font-size:12px" onclick="showToastM('已加入待采购清单','info')">稍后</button>
-</div>
-</div>
-</div>
-<div class="section-title">采购趋势</div>
-<div class="chart-card">
-<div class="chart-title">近7日采购量趋势</div>
-<div class="chart-area" id="chart-purchase-m"></div>
-</div>
-<div style="padding:16px">
-<button class="btn-m btn-m-primary" onclick="showToastM('一键采购订单已生成','success')">一键确认采购</button>
-</div>
-</div>
-
-<!-- 效期预警 -->
-<div class="inventory-extra-content" data-tab="2" style="display:none">
-<div class="section-title">效期预警物料</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">基围虾 · 即将过期</div>
-<div class="item-desc">效期至2026-07-01 | 剩余3天 | 库存18kg</div>
-</div>
-<div class="item-right">
-<button class="btn-m btn-m-danger btn-sm" style="padding:6px 12px;font-size:12px" onclick="showToastM('已标记优先使用','warning')">优先使用</button>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">金针菇 · 临期</div>
-<div class="item-desc">效期至2026-07-03 | 剩余5天 | 库存8kg</div>
-</div>
-<div class="item-right">
-<button class="btn-m btn-m-warning btn-sm" style="padding:6px 12px;font-size:12px;background:#faad14;color:#fff;border:none;border-radius:4px" onclick="showToastM('已通知厨师长','info')">通知</button>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">牛肉卷 · 正常</div>
-<div class="item-desc">效期至2026-07-20 | 剩余22天 | 库存35kg</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success);font-size:12px">正常</div>
-</div>
-</div>
-</div>
-<div class="section-title">效期分布</div>
-<div class="chart-card">
-<div class="chart-title">物料效期分布</div>
-<div class="chart-area" id="chart-expiry-m"></div>
 </div>
 </div>
 
@@ -1464,96 +1096,6 @@ svg+=`<text x="${x+barW/2}" y="${h-8}" text-anchor="middle" font-size="10" fill=
 });
 svg+=`</svg>`;
 el.innerHTML=svg;
-}
-
-// 绘制移动端饼图
-function drawPieM(id, data, labels, colors) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const w = el.clientWidth, h = el.clientHeight, r = Math.min(w, h) / 2 - 20, cx = w / 2, cy = h / 2;
-  const total = data.reduce((a, b) => a + b, 0);
-  let start = 0, svg = `<svg width="${w}" height="${h}">`;
-  data.forEach((v, i) => {
-    const angle = (v / total) * 2 * Math.PI;
-    const x1 = cx + r * Math.cos(start);
-    const y1 = cy + r * Math.sin(start);
-    const x2 = cx + r * Math.cos(start + angle);
-    const y2 = cy + r * Math.sin(start + angle);
-    const large = angle > Math.PI ? 1 : 0;
-    svg += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z" fill="${colors[i]}" stroke="#fff" stroke-width="2"/>`;
-    const mid = start + angle / 2;
-    const lr = r * 0.7;
-    const lx = cx + lr * Math.cos(mid);
-    const ly = cy + lr * Math.sin(mid);
-    svg += `<text x="${lx}" y="${ly}" text-anchor="middle" font-size="11" fill="#fff">${labels[i]}</text>`;
-    start += angle;
-  });
-  svg += `</svg>`;
-  el.innerHTML = svg;
-}
-
-// ===== 标签切换 =====
-function switchFrontTab(idx) {
-  document.querySelectorAll('#front-tabs .filter-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-  const page = document.getElementById('page-front');
-  Array.from(page.children).forEach(child => {
-    if (child.classList.contains('nav-header') || child.classList.contains('filter-tabs')) return;
-    if (child.classList.contains('front-extra-content')) {
-      child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
-    } else {
-      child.style.display = idx === 0 ? 'block' : 'none';
-    }
-  });
-  showToastM('切换至' + ['客流状态', '翻台监测', '等餐分析', '在岗监控'][idx], 'info');
-  if (idx === 1) {
-    setTimeout(() => drawBarM('chart-turn-m', [48, 52, 45, 50, 42, 38, 55, 60, 45, 48], ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'], '#52c41a'), 100);
-  }
-  if (idx === 2) {
-    setTimeout(() => drawBarM('chart-wait-dist-m', [15, 22, 30, 25, 18, 12, 20], ['P50', 'P80', 'P95', '平均', '最高', '最低', '超时'], '#faad14'), 100);
-  }
-  if (idx === 3) {
-    setTimeout(() => drawPieM('chart-staff-m', [8, 5, 2, 3], ['在岗', '休息', '离岗', '用餐'], ['#52c41a', '#1890ff', '#f5222d', '#faad14']), 100);
-  }
-}
-
-function switchKitchenTab(idx) {
-  document.querySelectorAll('#kitchen-tabs .filter-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-  const page = document.getElementById('page-kitchen');
-  Array.from(page.children).forEach(child => {
-    if (child.classList.contains('nav-header') || child.classList.contains('filter-tabs')) return;
-    if (child.classList.contains('kitchen-extra-content')) {
-      child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
-    } else {
-      child.style.display = idx === 0 ? 'block' : 'none';
-    }
-  });
-  showToastM('切换至' + ['出餐监控', '合规检测', '安全监控'][idx], 'info');
-  if (idx === 1) {
-    setTimeout(() => drawPieM('chart-compliance-m', [85, 10, 5], ['合格', '警告', '不合格'], ['#52c41a', '#faad14', '#f5222d']), 100);
-  }
-  if (idx === 2) {
-    setTimeout(() => drawBarM('chart-safety-m', [0, 1, 0, 2, 1, 0, 0], ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'], '#f5222d'), 100);
-  }
-}
-
-function switchInventoryTab(idx) {
-  document.querySelectorAll('#inventory-tabs .filter-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-  const page = document.getElementById('page-inventory');
-  Array.from(page.children).forEach(child => {
-    if (child.classList.contains('nav-header') || child.classList.contains('filter-tabs')) return;
-    if (child.classList.contains('inventory-extra-content')) {
-      child.style.display = child.getAttribute('data-tab') == idx ? 'block' : 'none';
-    } else {
-      child.style.display = idx === 0 ? 'block' : 'none';
-    }
-  });
-  showToastM('切换至' + ['库存概览', '采购建议', '效期预警'][idx], 'info');
-  if (idx === 1) {
-    setTimeout(() => drawBarM('chart-purchase-m', [12, 18, 15, 22, 20, 25, 28], ['7.20', '7.21', '7.22', '7.23', '7.24', '7.25', '7.26'], '#1890ff'), 100);
-  }
-  if (idx === 2) {
-    setTimeout(() => drawPieM('chart-expiry-m', [18, 8, 35], ['临期', '过期', '正常'], ['#faad14', '#f5222d', '#52c41a']), 100);
-  }
 }
 
 setTimeout(()=>{
