@@ -1030,7 +1030,7 @@ tr:hover td{background:#f6ffed}
 <div class="filter-bar" style="margin-bottom:0">
 <select><option>全部区域</option><option>前厅</option><option>后厨</option><option>天台</option><option>仓库</option></select>
 <select><option>全部状态</option><option>已完成</option><option>待完成</option><option>已超时</option></select>
-<button class="btn btn-primary">开始巡检</button>
+<button class="btn btn-primary" onclick="showToast('巡检任务已开始，请按清单逐项检查','success')">开始巡检</button>
 </div>
 </div>
 </div>
@@ -1195,7 +1195,7 @@ tr:hover td{background:#f6ffed}
 <div class="filter-bar" style="margin-bottom:0">
 <select><option>全部门店</option><option>天台店</option><option>万达广场店</option><option>解放路店</option></select>
 <select><option>全部状态</option><option>已完成</option><option>进行中</option><option>待巡检</option></select>
-<button class="btn btn-primary">新增计划</button>
+<button class="btn btn-primary" onclick="showToast('新建巡检计划表单已打开','info')">新增计划</button>
 </div>
 </div>
 </div>
@@ -1370,11 +1370,11 @@ tr:hover td{background:#f6ffed}
 </div>
 <div class="card-extra">
 <div class="btn-group" style="margin-bottom:0">
-<button class="btn btn-primary">全部</button>
-<button class="btn btn-default">待整改</button>
-<button class="btn btn-default">整改中</button>
-<button class="btn btn-default">待复检</button>
-<button class="btn btn-default">已归档</button>
+<button class="btn btn-primary" onclick="filterTrackStatus(this,'全部')">全部</button>
+<button class="btn btn-default" onclick="filterTrackStatus(this,'待整改')">待整改</button>
+<button class="btn btn-default" onclick="filterTrackStatus(this,'整改中')">整改中</button>
+<button class="btn btn-default" onclick="filterTrackStatus(this,'待复检')">待复检</button>
+<button class="btn btn-default" onclick="filterTrackStatus(this,'已归档')">已归档</button>
 </div>
 </div>
 </div>
@@ -2100,6 +2100,13 @@ document.addEventListener('DOMContentLoaded',function(){
     });
 });
 
+function filterTrackStatus(el, status) {
+    const btns = el.parentElement.querySelectorAll('button');
+    btns.forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-default'); });
+    el.classList.remove('btn-default');
+    el.classList.add('btn-primary');
+    showToast('已筛选：' + status, 'info');
+}
 </script>
 
 
