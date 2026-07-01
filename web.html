@@ -432,50 +432,210 @@ tr:hover td{background:#f6ffed}
 
 <!-- 前厅管理-客流识别 -->
 <div class="page" id="page-front-flow">
-<div class="card">
-<div class="card-header">
+<!-- 顶部统计仪表盘 -->
+<div class="stat-cards" style="margin-bottom:24px">
+<div class="stat-card" style="background:linear-gradient(135deg,#fff,#f0f7ff);box-shadow:0 8px 32px rgba(24,144,255,0.08);border-radius:16px;padding:24px;display:flex;align-items:center;gap:20px">
+<div style="flex:1">
+<div style="font-size:13px;color:#8c8c8c;margin-bottom:8px">当前等餐人数</div>
+<div style="font-size:42px;font-weight:700;background:linear-gradient(135deg,#1890ff,#52c41a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">9<span style="font-size:16px;font-weight:400;color:#8c8c8c;margin-left:4px">人</span></div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<div style="background:#e6f7ff;border-radius:8px;padding:8px 14px;text-align:center">
+<div style="font-size:18px;font-weight:700;color:#1890ff">3</div>
+<div style="font-size:11px;color:#595959">A区等位</div>
+</div>
+<div style="background:#e6ffed;border-radius:8px;padding:8px 14px;text-align:center">
+<div style="font-size:18px;font-weight:700;color:#52c41a">4</div>
+<div style="font-size:11px;color:#595959">B区等位</div>
+</div>
+<div style="background:#fff7e6;border-radius:8px;padding:8px 14px;text-align:center">
+<div style="font-size:18px;font-weight:700;color:#faad14">2</div>
+<div style="font-size:11px;color:#595959">C区等位</div>
+</div>
+</div>
+</div>
+<div style="text-align:center;padding:0 20px">
+<div style="width:120px;height:120px;position:relative;margin:0 auto 8px">
+<svg viewBox="0 0 120 120" width="120" height="120">
+<circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f0" stroke-width="12"/>
+<circle cx="60" cy="60" r="50" fill="none" stroke="url(#gradWeb)" stroke-width="12" stroke-dasharray="314.2" stroke-dashoffset="47.1" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+<defs><linearGradient id="gradWeb" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1890ff"/><stop offset="100%" style="stop-color:#52c41a"/></linearGradient></defs>
+<text x="60" y="56" text-anchor="middle" font-size="24" font-weight="700" fill="#1f1f1f">85%</text>
+<text x="60" y="72" text-anchor="middle" font-size="11" fill="#8c8c8c">翻台率</text>
+</svg>
+</div>
+<div style="font-size:13px;color:#52c41a;font-weight:600">↑ +8.2% 较昨日</div>
+</div>
+<div style="text-align:right;min-width:120px">
+<div style="background:#fff1f0;border-radius:12px;padding:14px 20px;margin-bottom:12px">
+<div style="font-size:12px;color:#cf1322;font-weight:600">预计等待</div>
+<div style="font-size:28px;font-weight:700;color:#f5222d">18<span style="font-size:13px">min</span></div>
+</div>
+<div style="font-size:13px;color:#8c8c8c">平均时长: <span style="font-weight:600;color:#1f1f1f">42min</span></div>
+</div>
+</div>
+<div class="stat-card" style="background:linear-gradient(135deg,#1890ff,#52c41a);box-shadow:0 8px 32px rgba(24,144,255,0.25);border-radius:16px;padding:24px;color:#fff;display:flex;flex-direction:column;justify-content:space-between">
 <div>
-<div class="card-title">实时区域座位状态</div>
-<div class="card-subtitle">AI视觉实时侦测空桌，5秒自动刷新</div>
+<div style="font-size:13px;opacity:0.85;margin-bottom:8px">今日翻台次数</div>
+<div style="font-size:36px;font-weight:700">4.5<span style="font-size:16px;font-weight:400;margin-left:4px">次</span></div>
+</div>
+<div style="margin-top:16px">
+<div style="font-size:13px;opacity:0.85;margin-bottom:4px">目标: 5.0次</div>
+<div style="width:100%;height:6px;background:rgba(255,255,255,0.2);border-radius:3px;overflow:hidden">
+<div style="width:90%;height:100%;background:rgba(255,255,255,0.9);border-radius:3px"></div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:13px;opacity:0.85">超时: 2桌</div>
+</div>
+</div>
+
+<!-- 实时区域状态 -->
+<div class="card" style="border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06);margin-bottom:24px">
+<div class="card-header" style="padding:24px 24px 16px">
+<div>
+<div class="card-title" style="font-size:18px">实时区域状态</div>
+<div class="card-subtitle" style="margin-top:4px">AI视觉实时侦测空桌，5秒自动刷新</div>
 </div>
 <div class="card-extra">
 <div class="btn-group">
-<span class="tag tag-green">● 空闲</span>
-<span class="tag tag-red">● 占用</span>
-<span class="tag tag-orange">● 待清洁</span>
+<span class="tag" style="background:#f6ffed;color:#389e0d;padding:4px 10px;border-radius:4px;font-size:12px">● 空闲</span>
+<span class="tag" style="background:#fff1f0;color:#cf1322;padding:4px 10px;border-radius:4px;font-size:12px">● 占用</span>
+<span class="tag" style="background:#fff7e6;color:#d48806;padding:4px 10px;border-radius:4px;font-size:12px">● 待清洁</span>
 </div>
-<button class="btn btn-primary">刷新</button>
-</div>
-</div>
-<div class="zone-map">
-<div class="zone-area active">
-<div class="zone-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>天台区（客流密度: 78%）<span class="tag tag-orange">预警</span></div>
-<div class="zone-seats" id="seats-outdoor"></div>
-</div>
-<div class="zone-area">
-<div class="zone-title"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>室内区（客流密度: 62%）<span class="tag tag-green">正常</span></div>
-<div class="zone-seats" id="seats-indoor"></div>
+<button class="btn btn-primary" style="border-radius:8px">刷新</button>
 </div>
 </div>
+<div style="padding:0 24px 24px">
+<div class="zone-map" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+<div class="zone-area" style="background:linear-gradient(135deg,#e6f4ff,#f0f7ff);border-radius:16px;padding:20px;border:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<div style="display:flex;align-items:center;gap:8px">
+<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#1890ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+<span style="font-size:14px;font-weight:600;color:#1890ff">A区 · 大厅</span>
 </div>
-<div class="chart-row">
-<div class="chart-box">
-<div class="chart-title">今日客流密度趋势</div>
-<div class="chart-container" id="chart-flow2"></div>
+<span class="tag" style="background:#fff7e6;color:#d48806;padding:2px 10px;border-radius:4px;font-size:12px">客流78%</span>
 </div>
-<div class="chart-box">
-<div class="chart-title">满座率预警记录</div>
-<div class="table-wrap" style="max-height:300px;overflow-y:auto">
-<table>
-<thead><tr><th>时间</th><th>区域</th><th>密度</th><th>状态</th><th>处理</th></tr></thead>
+<div class="zone-seats" id="seats-area-a" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+</div>
+<div class="zone-area" style="background:linear-gradient(135deg,#e6ffed,#f0fff4);border-radius:16px;padding:20px;border:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<div style="display:flex;align-items:center;gap:8px">
+<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#52c41a"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+<span style="font-size:14px;font-weight:600;color:#52c41a">B区 · 包间</span>
+</div>
+<span class="tag" style="background:#f6ffed;color:#389e0d;padding:2px 10px;border-radius:4px;font-size:12px">正常62%</span>
+</div>
+<div class="zone-seats" id="seats-area-b" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+</div>
+<div class="zone-area" style="background:linear-gradient(135deg,#fff7e6,#fffbe6);border-radius:16px;padding:20px;border:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<div style="display:flex;align-items:center;gap:8px">
+<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#faad14"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+<span style="font-size:14px;font-weight:600;color:#faad14">C区 · 天台</span>
+</div>
+<span class="tag" style="background:#fff1f0;color:#cf1322;padding:2px 10px;border-radius:4px;font-size:12px">预警88%</span>
+</div>
+<div class="zone-seats" id="seats-area-c" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 翻台实时状态 + 预警记录 + 趋势图 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+<div class="card" style="border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)">
+<div class="card-header" style="padding:20px 24px 16px">
+<div class="card-title" style="font-size:16px">翻台实时状态</div>
+</div>
+<div style="padding:0 24px 24px;display:flex;flex-direction:column;gap:12px">
+<div style="background:linear-gradient(135deg,#f6ffed,#e6ffed);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px">
+<div style="width:44px;height:44px;background:linear-gradient(135deg,#52c41a,#73d13d);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(82,196,26,0.2)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:600;color:#1f1f1f">12号桌 · 已清洁</div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:2px">清洁用时 6分钟 | 张小明</div>
+</div>
+<div style="font-size:13px;color:#52c41a;font-weight:600">✓ 可入座</div>
+</div>
+<div style="background:linear-gradient(135deg,#fff7e6,#fffbe6);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px">
+<div style="width:44px;height:44px;background:linear-gradient(135deg,#faad14,#ffd666);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(250,173,20,0.2)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:600;color:#1f1f1f">8号桌 · 清洁中</div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:2px">已用时 8分钟 | 李小红</div>
+</div>
+<div style="font-size:13px;color:#faad14;font-weight:600">8min 进行中</div>
+</div>
+<div style="background:linear-gradient(135deg,#fff1f0,#ffccc7);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px">
+<div style="width:44px;height:44px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:600;color:#1f1f1f">5号桌 · 清洁超时</div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:2px">已用时 12分钟 | 王大力</div>
+</div>
+<div style="font-size:13px;color:#f5222d;font-weight:600">12min 已告警</div>
+</div>
+</div>
+</div>
+<div class="card" style="border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)">
+<div class="card-header" style="padding:20px 24px 16px">
+<div class="card-title" style="font-size:16px">满座率预警记录</div>
+</div>
+<div style="padding:0 24px 24px">
+<div class="table-wrap" style="max-height:280px;overflow-y:auto">
+<table style="width:100%;border-collapse:collapse">
+<thead><tr style="border-bottom:1px solid #eee">
+<th style="padding:10px 8px;text-align:left;font-size:12px;color:#8c8c8c;font-weight:500">时间</th>
+<th style="padding:10px 8px;text-align:left;font-size:12px;color:#8c8c8c;font-weight:500">区域</th>
+<th style="padding:10px 8px;text-align:left;font-size:12px;color:#8c8c8c;font-weight:500">密度</th>
+<th style="padding:10px 8px;text-align:left;font-size:12px;color:#8c8c8c;font-weight:500">状态</th>
+<th style="padding:10px 8px;text-align:left;font-size:12px;color:#8c8c8c;font-weight:500">处理</th>
+</tr></thead>
 <tbody>
-<tr><td>10:20</td><td>天台区</td><td>82%</td><td><span class="tag tag-orange">已触发</span></td><td>已通知店长</td></tr>
-<tr><td>09:45</td><td>室内区</td><td>85%</td><td><span class="tag tag-green">已恢复</span></td><td>已分流</td></tr>
-<tr><td>09:10</td><td>天台区</td><td>88%</td><td><span class="tag tag-green">已恢复</span></td><td>已加座</td></tr>
-<tr><td>08:30</td><td>室内区</td><td>81%</td><td><span class="tag tag-green">已恢复</span></td><td>已分流</td></tr>
+<tr style="border-bottom:1px solid #f5f5f5">
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">10:20</td>
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">天台区</td>
+<td style="padding:12px 8px;font-size:13px;color:#f5222d;font-weight:600">82%</td>
+<td style="padding:12px 8px"><span style="background:#fff7e6;color:#d48806;padding:2px 8px;border-radius:4px;font-size:12px">已触发</span></td>
+<td style="padding:12px 8px;font-size:13px;color:#8c8c8c">已通知店长</td>
+</tr>
+<tr style="border-bottom:1px solid #f5f5f5">
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">09:45</td>
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">室内区</td>
+<td style="padding:12px 8px;font-size:13px;color:#faad14;font-weight:600">85%</td>
+<td style="padding:12px 8px"><span style="background:#f6ffed;color:#389e0d;padding:2px 8px;border-radius:4px;font-size:12px">已恢复</span></td>
+<td style="padding:12px 8px;font-size:13px;color:#8c8c8c">已分流</td>
+</tr>
+<tr style="border-bottom:1px solid #f5f5f5">
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">09:10</td>
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">天台区</td>
+<td style="padding:12px 8px;font-size:13px;color:#f5222d;font-weight:600">88%</td>
+<td style="padding:12px 8px"><span style="background:#f6ffed;color:#389e0d;padding:2px 8px;border-radius:4px;font-size:12px">已恢复</span></td>
+<td style="padding:12px 8px;font-size:13px;color:#8c8c8c">已加座</td>
+</tr>
+<tr>
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">08:30</td>
+<td style="padding:12px 8px;font-size:13px;color:#1f1f1f">室内区</td>
+<td style="padding:12px 8px;font-size:13px;color:#faad14;font-weight:600">81%</td>
+<td style="padding:12px 8px"><span style="background:#f6ffed;color:#389e0d;padding:2px 8px;border-radius:4px;font-size:12px">已恢复</span></td>
+<td style="padding:12px 8px;font-size:13px;color:#8c8c8c">已分流</td>
+</tr>
 </tbody>
 </table>
 </div>
+</div>
+</div>
+</div>
+
+<!-- 客流密度趋势 -->
+<div class="card" style="border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06);margin-bottom:24px">
+<div class="card-header" style="padding:20px 24px">
+<div class="card-title" style="font-size:16px">今日客流密度趋势</div>
+</div>
+<div style="padding:0 24px 24px">
+<div class="chart-container" id="chart-flow2" style="height:280px"></div>
 </div>
 </div>
 </div>
@@ -1287,17 +1447,19 @@ const el=document.getElementById(id);
 if(!el)return;
 let html='';
 for(let i=1;i<=total;i++){
-let cls='free';
-if(i<=occupied)cls='occupied';
-else if(i<=occupied+cleaning)cls='cleaning';
-const zoneName=id==='seats-outdoor'?'天台区':'室内区';html+=`<div class="seat ${cls}" onclick="showSeatDetail(${i},'${cls}','${zoneName}')">${i}</div>`;
+let cls='free',label='空闲',bg='linear-gradient(135deg,#52c41a,#73d13d)',shadow='0 2px 8px rgba(82,196,26,0.2)';
+if(i<=occupied){cls='occupied';label='占用';bg='linear-gradient(135deg,#ff4d4f,#f5222d)';shadow='0 2px 8px rgba(245,34,45,0.2)'}
+else if(i<=occupied+cleaning){cls='cleaning';label='清洁';bg='linear-gradient(135deg,#faad14,#ffd666)';shadow='0 2px 8px rgba(250,173,20,0.2)'}
+const zoneName=id==='seats-area-a'?'A区':id==='seats-area-b'?'B区':'C区';
+html+=`<div class="seat-web ${cls}" onclick="showSeatDetail(${i},'${cls}','${zoneName}')" style="width:56px;height:56px;background:${bg};border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:${shadow};cursor:pointer;transition:transform 0.2s;color:#fff"><span style="font-size:13px;font-weight:700">${i}</span><span style="font-size:10px;opacity:0.9">${label}</span></div>`;
 }
 el.innerHTML=html;
 }
 
 setTimeout(()=>{
-generateSeats('seats-outdoor',30,22,4);
-generateSeats('seats-indoor',40,26,3);
+generateSeats('seats-area-a',8,6,1);
+generateSeats('seats-area-b',4,4,0);
+generateSeats('seats-area-c',3,1,1);
 renderCharts();
 },200);
 
