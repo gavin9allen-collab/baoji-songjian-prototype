@@ -226,6 +226,12 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 /* ===== 按钮点击反馈 ===== */
 .quick-item:active,.alert-item:active,.list-item-m:active,.profile-menu-item:active{transform:scale(0.98);opacity:0.9}
 
+@keyframes seat-pulse{0%,100%{box-shadow:0 2px 8px rgba(250,173,20,0.2)}50%{box-shadow:0 2px 16px rgba(250,173,20,0.5)}}
+@keyframes pulse-dot{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}100%{opacity:1;transform:scale(1)}}
+.btn-modern{width:100%;padding:16px;background:linear-gradient(135deg,#1890ff,#52c41a);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 8px 24px rgba(24,144,255,0.3);transition:all 0.3s ease;position:relative;overflow:hidden}
+.btn-modern:active{transform:scale(0.96);box-shadow:0 4px 12px rgba(24,144,255,0.2)}
+.btn-modern::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.2);border-radius:50%;transform:translate(-50%,-50%);transition:width 0.6s ease,height 0.6s ease}
+.btn-modern:active::after{width:300px;height:300px}
 </style>
 </head>
 <body>
@@ -379,75 +385,225 @@ body{background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;disp
 <div class="filter-tab" onclick="switchFrontTab(2)">等餐分析</div>
 <div class="filter-tab" onclick="switchFrontTab(3)">在岗监控</div>
 </div>
-<div class="cam-preview">
-<span class="cam-label">天台区 - 实时监控</span>
-<div class="cam-status"><div class="live-dot"></div>LIVE</div>
-<svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+<div class="front-modern-container" style="padding:16px 16px 24px">
+<!-- 等餐人数大卡片 -->
+<div class="modern-card" style="background:linear-gradient(135deg,#fff,#f0f7ff);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(24,144,255,0.08);position:relative;overflow:hidden">
+<div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:linear-gradient(135deg,#1890ff,#52c41a);border-radius:50%;opacity:0.08"></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+<div>
+<div style="font-size:13px;color:#8c8c8c;margin-bottom:4px">当前等餐人数</div>
+<div style="font-size:36px;font-weight:700;background:linear-gradient(135deg,#1890ff,#52c41a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">9<span style="font-size:14px;font-weight:400;color:#8c8c8c;margin-left:4px">人</span></div>
 </div>
-<div class="section-title" style="padding-top:8px">天台区座位状态</div>
-<div class="seat-grid-m">
-<div class="seat-m occupied">1</div>
-<div class="seat-m occupied">2</div>
-<div class="seat-m free">3</div>
-<div class="seat-m occupied">4</div>
-<div class="seat-m occupied">5</div>
-<div class="seat-m cleaning">6</div>
-<div class="seat-m occupied">7</div>
-<div class="seat-m occupied">8</div>
-<div class="seat-m free">9</div>
-<div class="seat-m occupied">10</div>
-<div class="seat-m occupied">11</div>
-<div class="seat-m occupied">12</div>
-<div class="seat-m free">13</div>
-<div class="seat-m occupied">14</div>
-<div class="seat-m occupied">15</div>
-</div>
-<div class="section-title">翻台实时状态</div>
-<div class="alert-list">
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#52c41a,#95de64)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">12号桌 - 已清洁</div>
-<div class="item-desc">清洁用时 6分钟 | 清洁员: 张小明</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--success)">✓</div>
-<div class="label">可入座</div>
+<div style="background:#fff1f0;border-radius:12px;padding:8px 12px;text-align:center">
+<div style="font-size:12px;color:#cf1322;font-weight:600">预计等待</div>
+<div style="font-size:18px;font-weight:700;color:#f5222d">18<span style="font-size:12px">min</span></div>
 </div>
 </div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#faad14,#ffd666)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:#e6f7ff;border-radius:10px;padding:10px;text-align:center">
+<div style="font-size:20px;font-weight:700;color:#1890ff">3</div>
+<div style="font-size:11px;color:#595959;margin-top:2px">A区等位</div>
 </div>
-<div class="item-body">
-<div class="item-title">8号桌 - 清洁中</div>
-<div class="item-desc">已用时 8分钟 | 清洁员: 李小红</div>
+<div style="flex:1;background:#e6ffed;border-radius:10px;padding:10px;text-align:center">
+<div style="font-size:20px;font-weight:700;color:#52c41a">4</div>
+<div style="font-size:11px;color:#595959;margin-top:2px">B区等位</div>
 </div>
-<div class="item-right">
-<div class="value" style="color:var(--warning)">8min</div>
-<div class="label">进行中</div>
-</div>
-</div>
-<div class="list-item-m" style="background:#fff;margin:0 16px 10px;border-radius:12px">
-<div class="item-icon" style="background:linear-gradient(135deg,#f5222d,#ff7875)">
-<svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-</div>
-<div class="item-body">
-<div class="item-title">5号桌 - 清洁超时</div>
-<div class="item-desc">已用时 12分钟 | 清洁员: 王大力</div>
-</div>
-<div class="item-right">
-<div class="value" style="color:var(--danger)">12min</div>
-<div class="label">已告警</div>
+<div style="flex:1;background:#fff7e6;border-radius:10px;padding:10px;text-align:center">
+<div style="font-size:20px;font-weight:700;color:#faad14">2</div>
+<div style="font-size:11px;color:#595959;margin-top:2px">C区等位</div>
 </div>
 </div>
 </div>
-<div class="chart-card">
-<div class="chart-title">等餐时长趋势</div>
-<div class="chart-area" id="chart-wait-m"></div>
-  </div>
+
+<!-- 实时座位状态 -->
+<div class="modern-card" style="background:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<div style="font-size:16px;font-weight:600;color:#1f1f1f">实时区域状态</div>
+<div style="display:flex;align-items:center;gap:6px">
+<div style="width:8px;height:8px;background:#f5222d;border-radius:50%;animation:pulse-dot 2s infinite"></div>
+<span style="font-size:12px;color:#8c8c8c">LIVE</span>
+</div>
+</div>
+
+<!-- A区 -->
+<div style="background:linear-gradient(135deg,#e6f4ff,#f0f7ff);border-radius:14px;padding:14px;margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<span style="font-size:13px;font-weight:600;color:#1890ff">A区 · 大厅</span>
+<span style="font-size:11px;color:#8c8c8c">8桌</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">1</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">2</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#52c41a,#73d13d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(82,196,26,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">3</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">空闲</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">4</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">5</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">7</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">8</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">10</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+</div>
+</div>
+
+<!-- B区 -->
+<div style="background:linear-gradient(135deg,#e6ffed,#f0fff4);border-radius:14px;padding:14px;margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<span style="font-size:13px;font-weight:600;color:#52c41a">B区 · 包间</span>
+<span style="font-size:11px;color:#8c8c8c">4桌</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">11</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">12</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">14</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">15</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">占用</span>
+</div>
+</div>
+</div>
+
+<!-- C区 -->
+<div style="background:linear-gradient(135deg,#fff7e6,#fffbe6);border-radius:14px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<span style="font-size:13px;font-weight:600;color:#faad14">C区 · 天台</span>
+<span style="font-size:11px;color:#8c8c8c">3桌</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#52c41a,#73d13d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(82,196,26,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">9</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">空闲</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#52c41a,#73d13d);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(82,196,26,0.2)">
+<span style="font-size:11px;font-weight:600;color:#fff">13</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">空闲</span>
+</div>
+<div style="width:48px;height:48px;background:linear-gradient(135deg,#faad14,#ffd666);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(250,173,20,0.2);animation:seat-pulse 2s infinite">
+<span style="font-size:11px;font-weight:600;color:#fff">6</span>
+<span style="font-size:9px;color:#fff;opacity:0.9">清洁</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 翻台率仪表盘 + 等餐趋势 -->
+<div class="modern-card" style="background:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)">
+<div style="font-size:16px;font-weight:600;color:#1f1f1f;margin-bottom:16px">今日翻台率</div>
+<div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:16px">
+<div style="text-align:center">
+<div style="width:100px;height:100px;position:relative;margin:0 auto 8px">
+<svg viewBox="0 0 100 100" width="100" height="100">
+<circle cx="50" cy="50" r="42" fill="none" stroke="#f0f0f0" stroke-width="10"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="url(#grad1)" stroke-width="10" stroke-dasharray="263.9" stroke-dashoffset="39.6" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1890ff"/><stop offset="100%" style="stop-color:#52c41a"/></linearGradient></defs>
+<text x="50" y="48" text-anchor="middle" font-size="22" font-weight="700" fill="#1f1f1f">85%</text>
+<text x="50" y="62" text-anchor="middle" font-size="10" fill="#8c8c8c">翻台率</text>
+</svg>
+</div>
+<div style="font-size:12px;color:#52c41a;font-weight:600">↑ +8.2% 较昨日</div>
+</div>
+<div style="text-align:center">
+<div style="font-size:32px;font-weight:700;background:linear-gradient(135deg,#1890ff,#52c41a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">4.5<span style="font-size:14px">次</span></div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:4px">平均翻台</div>
+<div style="font-size:12px;color:#52c41a;font-weight:600;margin-top:4px">目标: 5.0</div>
+</div>
+<div style="text-align:center">
+<div style="font-size:32px;font-weight:700;background:linear-gradient(135deg,#1890ff,#52c41a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">42<span style="font-size:14px">min</span></div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:4px">平均时长</div>
+<div style="font-size:12px;color:#f5222d;font-weight:600;margin-top:4px">超时: 2桌</div>
+</div>
+</div>
+<div style="background:#f6ffed;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:13px;color:#389e0d;font-weight:600">今日目标翻台率</div>
+<div style="display:flex;align-items:center;gap:8px">
+<div style="width:120px;height:6px;background:#d9f7be;border-radius:3px;overflow:hidden">
+<div style="width:85%;height:100%;background:linear-gradient(90deg,#52c41a,#73d13d);border-radius:3px"></div>
+</div>
+<span style="font-size:12px;color:#389e0d;font-weight:600">85%</span>
+</div>
+</div>
+</div>
+
+<!-- 翻台实时状态 -->
+<div class="modern-card" style="background:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)">
+<div style="font-size:16px;font-weight:600;color:#1f1f1f;margin-bottom:14px">翻台实时状态</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="background:linear-gradient(135deg,#f6ffed,#e6ffed);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px">
+<div style="width:40px;height:40px;background:linear-gradient(135deg,#52c41a,#73d13d);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(82,196,26,0.2)">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:600;color:#1f1f1f">12号桌 · 已清洁</div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:2px">清洁用时 6分钟 | 张小明</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:12px;color:#52c41a;font-weight:600">✓ 可入座</div>
+</div>
+</div>
+<div style="background:linear-gradient(135deg,#fff7e6,#fffbe6);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px">
+<div style="width:40px;height:40px;background:linear-gradient(135deg,#faad14,#ffd666);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(250,173,20,0.2);animation:seat-pulse 2s infinite">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:600;color:#1f1f1f">8号桌 · 清洁中</div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:2px">已用时 8分钟 | 李小红</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:12px;color:#faad14;font-weight:600">8min 进行中</div>
+</div>
+</div>
+<div style="background:linear-gradient(135deg,#fff1f0,#ffccc7);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px">
+<div style="width:40px;height:40px;background:linear-gradient(135deg,#ff4d4f,#f5222d);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(245,34,45,0.2)">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+</div>
+<div style="flex:1">
+<div style="font-size:14px;font-weight:600;color:#1f1f1f">5号桌 · 清洁超时</div>
+<div style="font-size:12px;color:#8c8c8c;margin-top:2px">已用时 12分钟 | 王大力</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:12px;color:#f5222d;font-weight:600">12min 已告警</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 一键开台按钮 -->
+<div style="padding:0 0 16px">
+<button class="btn-modern" onclick="openModalM('开台确认','确认开启新桌台？','<button class=\'btn-m btn-m-default\' onclick=\'closeModalM()\'>取消</button><button class=\'btn-m btn-m-primary\' onclick=\'showToastM(\\'开台成功\\',\\'success\\');closeModalM()\'>确认</button>')">
+<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff;margin-right:6px"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+一键开台
+</button>
+</div>
 </div>
 
 <!-- 翻台监测 -->
